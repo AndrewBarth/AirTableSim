@@ -1,0 +1,9 @@
+﻿  stdafx.cpp
+  Phidget_Library.cpp
+  PhidgetHelperFunctions.c
+  dllmain.cpp
+  Accelerometer.c
+  Generating Code...
+     Creating library Z:\My Documents\MATLAB\AirTableSim\Phidget\Phidget_Library\x64\Debug\Phidget_Library.lib and object Z:\My Documents\MATLAB\AirTableSim\Phidget\Phidget_Library\x64\Debug\Phidget_Library.exp
+  Phidget_Library.vcxproj -> Z:\My Documents\MATLAB\AirTableSim\Phidget\Phidget_Library\x64\Debug\Phidget_Library.dll
+  Phidget_Library.vcxproj -> Z:\My Documents\MATLAB\AirTableSim\Phidget\Phidget_Library\x64\Debug\Phidget_Library.pdb (Full PDB)
