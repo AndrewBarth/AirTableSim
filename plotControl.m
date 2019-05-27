@@ -2,29 +2,35 @@
 dtr = pi/180;
 rtd = 180/pi;
 
+
+ECEFpos = stateOutBus.TranState_ECEF.R_Sys_ECEF;
+ECEFvel = stateOutBus.TranState_ECEF.V_Sys_ECEF;
+EulerAngles = stateOutBus.RotState_Body_ECEF.Body_To_ECEF_Euler;
+BodyRates = stateOutBus.RotState_Body_ECEF.BodyRates_wrt_ECEF_In_Body;
+
 figure;
-subplot(3,1,1);plot(refValues.Time,refValues.Data(:,1),stateOutECEF.Time,stateOutECEF.Data(:,1))
+subplot(3,1,1);plot(refValues.Time,refValues.Data(:,1),ECEFpos.Time,ECEFpos.Data(:,1))
 title('Reference Trajectory Tracking: X Position');xlabel('Time (s)');ylabel('Position (m)')
 legend('Reference','Actual')
 
-subplot(3,1,2);plot(refValues.Time,refValues.Data(:,2),stateOutECEF.Time,stateOutECEF.Data(:,2))
+subplot(3,1,2);plot(refValues.Time,refValues.Data(:,2),ECEFpos.Time,ECEFpos.Data(:,2))
 title('Reference Trajectory Tracking: Y Position');xlabel('Time (s)');ylabel('Position (m)')
 legend('Reference','Actual')
 
-subplot(3,1,3);plot(refValues.Time,refValues.Data(:,6)*rtd,stateOutECEF.Time,stateOutECEF.Data(:,6)*rtd)
+subplot(3,1,3);plot(refValues.Time,refValues.Data(:,6)*rtd,EulerAngles.Time,EulerAngles.Data(:,3)*rtd)
 title('Reference Trajectory Tracking: Theta Angle');xlabel('Time (s)');ylabel('Angle (deg)')
 legend('Reference','Actual')
 
 figure;
-subplot(3,1,1);plot(refValues.Time,refValues.Data(:,7),stateOutECEF.Time,stateOutECEF.Data(:,7))
+subplot(3,1,1);plot(refValues.Time,refValues.Data(:,7),ECEFvel.Time,ECEFvel.Data(:,1))
 title('Reference Trajectory Tracking: X Velocity');xlabel('Time (s)');ylabel('Velocity (m/s)')
 legend('Reference','Actual')
 
-subplot(3,1,2);plot(refValues.Time,refValues.Data(:,8),stateOutECEF.Time,stateOutECEF.Data(:,8))
+subplot(3,1,2);plot(refValues.Time,refValues.Data(:,8),ECEFvel.Time,ECEFvel.Data(:,2))
 title('Reference Trajectory Tracking: Y Velocity');xlabel('Time (s)');ylabel('Velocity (m/s)')
 legend('Reference','Actual')
 
-subplot(3,1,3);plot(refValues.Time,refValues.Data(:,12)*rtd,stateOutECEF.Time,stateOutECEF.Data(:,12)*rtd)
+subplot(3,1,3);plot(refValues.Time,refValues.Data(:,12)*rtd,BodyRates.Time,BodyRates.Data(:,3)*rtd)
 title('Reference Trajectory Tracking: Angular Rate');xlabel('Time (s)');ylabel('Angular Rate (deg/s)')
 legend('Reference','Actual')
 
