@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>043d946f-3141-497b-90ca-71f4322f7372</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Phidget_Library_Python.py</StartupFile>
+    <StartupFile>SimpleAcclerometer.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -24,7 +24,7 @@
   <ItemGroup>
     <Compile Include="AccelerometerInit.py" />
     <Compile Include="PhidgetHelperFunctions.py" />
-    <Compile Include="Phidget_Library_Python.py" />
+    <Compile Include="SimpleAcclerometer.py" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
