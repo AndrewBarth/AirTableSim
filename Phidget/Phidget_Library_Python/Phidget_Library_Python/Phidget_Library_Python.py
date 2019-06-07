@@ -1,3 +1,0 @@
-from AccelerometerInit import *
-
-AccelerometerMain()
