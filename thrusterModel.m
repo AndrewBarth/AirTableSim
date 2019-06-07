@@ -19,13 +19,13 @@ function [outputForce,outputMoment,thrusterOn,thrusterOnTimes] = thrusterModel(t
 %
 % References:
 %   Thruster Layout
-%     1       3   
-%    2         4
+%     3       2   
+%    4         1
 %
 %
-%    5         7
-%     6       8
-% 
+%    5         8
+%     6       7
+%
 % Author: Andrew Barth
 %
 % Modification History:

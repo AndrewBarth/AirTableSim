@@ -1,4 +1,6 @@
 *.slxc
 *.asv
-
+slprj/*
+*ert_rtw/*
+__pycache*
 
