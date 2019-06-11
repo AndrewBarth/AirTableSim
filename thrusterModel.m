@@ -1,16 +1,19 @@
 
-function [outputForce,outputMoment,thrusterOn,thrusterOnTimes] = thrusterModel(time,controlForce,controlMoment,thrusterData)
+function [outputForce,outputMoment,thrusterOn,thrusterOnTimes,onPulseWidth] = thrusterModel(time,controlForce,controlMoment,thrusterData,prev_onPulseWidth)
 
 % Function to model a set of thrusters
 % 
 % Inputs: time             current time (s)
 %         cmdForce         force command signal (N)
 %         cmdMoment        moment command signal (N-m)
+%         thrusterData     thruster data structure
+%         prev_onPulseWidth on pulse width for each thruster (s)
 %
 % Output: outputForce      force produced by thrusters (N)
 %         outputMoment     moment produced by wheel (N-m)
 %         thrusterOn       thruster on/off commands
 %         thrusterOnTimes  array of thruster on-times (s)
+%         onPulseWidth     on pulse width for each thruster (s)
 %
 % Assumptions and Limitations:
 %     Thrust is modeled as a square wave
@@ -47,7 +50,6 @@ function [outputForce,outputMoment,thrusterOn,thrusterOnTimes] = thrusterModel(t
     % Thruster Data
 %     nThruster     = thrusterData.nThruster;
     nThruster = 8;
-    minOnTime     = 0.05;   % s
     timeStep = 0.025;
     
     % Zero the output for this time step
@@ -55,8 +57,6 @@ function [outputForce,outputMoment,thrusterOn,thrusterOnTimes] = thrusterModel(t
     outputMoment = [0 0 0]';
     thrusterOnTimes = zeros(nThruster,1);
     
-    minImpulse = minOnTime*thrusterData.nominalThrust;
-  
     cmdFM =[controlForce controlMoment];
      
     C = thrusterData.thrusterCombinations;
@@ -102,14 +102,14 @@ function [outputForce,outputMoment,thrusterOn,thrusterOnTimes] = thrusterModel(t
     % The impulse for the current time step
 %     Fimpulse = F(idx,:)*timeStep;
 %     Mimpulse = M(idx,:)*timeStep;
-    Fimpulse = F(idx,:)*minOnTime;
-    Mimpulse = M(idx,:)*minOnTime;
+    Fimpulse = F(idx,:)*thrusterData.minOnTime;
+    Mimpulse = M(idx,:)*thrusterData.minOnTime;
     cmdFimpulse = cmdFM(1:3)*timeStep;
     cmdMimpulse = cmdFM(4:6)*timeStep;
-    %ontimes = 
+   
     if norm(cmdFimpulse) >= norm(Fimpulse) || norm(cmdMimpulse) >= norm(Mimpulse)
-        outputForce  = F(idx,:)';
-        outputMoment = M(idx,:)';
+%         outputForce  = F(idx,:)';
+%         outputMoment = M(idx,:)';
         for i=1:3
             if C(idx,i) ~= 0
                 thrusterOnTimes(C(idx,i)) = timeStep;
@@ -121,13 +121,25 @@ function [outputForce,outputMoment,thrusterOn,thrusterOnTimes] = thrusterModel(t
     thrusterOn = thrusterOnTimes > eps;
     
     % pulseWidth needs to be a persistent variable
-    pulseWidth = zeros(nThruster);   
+    onPulseWidth = prev_onPulseWidth;   
     for i = 1:nThruster
-        if thrusterOn
-            pulseWidth(i) = pulseWidth(i) + timeStep;
+        if thrusterOn(i)
+            outputForce  = outputForce + thrusterData.thrusterForce(i,:)';
+            outputMoment = outputMoment + thrusterData.thrusterMoment(i,:)';
+            onPulseWidth(i) = onPulseWidth(i) + timeStep;
         else
-            pulseWidth(i) = 0.0;
+            if onPulseWidth(i) > eps && onPulseWidth(i) < (thrusterData.minOnTime-eps)
+                % Hold the thruster on for anohter cycle
+                onPulseWidth(i) = onPulseWidth(i) + timeStep;
+                outputForce  = outputForce + thrusterData.thrusterForce(i,:)';
+                outputMoment = outputMoment + thrusterData.thrusterMoment(i,:)';
+                thrusterOnTimes(i) = timeStep;
+                thrusterOn(i) = uint8(1);
+            else
+                onPulseWidth(i) = 0.0;
+            end
         end
     end
-    
+
+  
 
