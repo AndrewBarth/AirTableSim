@@ -1,5 +1,16 @@
 dynamicsRate = 0.005;
 controlRate = 0.025;
+load('ConfigSet_RPi_DynamicsRate.mat');
+load('ConfigSet_RPi_ControlRate.mat');
+
+%% Configure sensor setup
+VSS_SIMDYNAMICS = Simulink.Variant('VSS_MODE==0');
+VSS_HWSENSOR    = Simulink.Variant('VSS_MODE==1');
+VSS_SIMFILTERED = Simulink.Variant('VSS_MODE==2');
+VSS_SIMSENSOR   = Simulink.Variant('VSS_MODE==3');
+VSS_MODE = 0;
+
+
 
 %% Rotational State Bus
 clear elems;
@@ -102,3 +113,4 @@ FullStateBus = Simulink.Bus;
 FullStateBus.Elements = elems;
 
 StateStruct = Simulink.Bus.createMATLABStruct('FullStateBus');
+clear elems;

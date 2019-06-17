@@ -18,14 +18,35 @@ if exist('sensedRange','var')
     title('Sensed Range');xlabel('Time (s)');ylabel('Range (mm)');
 end
 
-if exist('filteredRate','var') && exist('sensedRate','var')
-    figure;plot(sensedRate.Time,squeeze(sensedRate.Data(1,1,:)),filteredRate.Time,squeeze(filteredRate.Data(1,1,:)));
-    legend('sensed x','filtered x')
-    title('Filtered Angular Rate');xlabel('Time (s)');ylabel('Angular Rate (deg/s)');
+if exist('filteredRate','var') && exist('unFilteredRate','var')
+    figure;
+    subplot(3,1,1);plot(unFilteredRate.Time,squeeze(unFilteredRate.Data(1,1,:)),filteredRate.Time,squeeze(filteredRate.Data(1,1,:)));
+    legend('unFiltered','Filtered')
+    title('X Axis Filtered Angular Rate');xlabel('Time (s)');ylabel('Angular Rate (deg/s)');
+    
+    subplot(3,1,2);plot(unFilteredRate.Time,squeeze(unFilteredRate.Data(2,1,:)),filteredRate.Time,squeeze(filteredRate.Data(2,1,:)));
+    legend('unFiltered','Filtered')
+    title('Y Axis Filtered Angular Rate');xlabel('Time (s)');ylabel('Angular Rate (deg/s)');
+    
+    subplot(3,1,3);plot(unFilteredRate.Time,squeeze(unFilteredRate.Data(3,1,:)),filteredRate.Time,squeeze(filteredRate.Data(3,1,:)));
+    legend('unFiltered','Filtered')
+    title('Z Axis Filtered Angular Rate');xlabel('Time (s)');ylabel('Angular Rate (deg/s)');
+    
+    
 end
 
-if exist('filteredRate1','var')
-    figure;plot(filteredRate1.Time,squeeze(filteredRate1.Data(1,1,:)));
-    legend('x','y','z')
-    title('Filtered Angular Rate 1');xlabel('Time (s)');ylabel('Angular Rate (deg/s)');
+
+if exist('filteredAccel','var') && exist('unFilteredAccel','var')
+    figure;
+    subplot(3,1,1);plot(unFilteredAccel.Time,squeeze(unFilteredAccel.Data(1,1,:)),filteredAccel.Time,squeeze(filteredAccel.Data(1,1,:)));
+    legend('unFiltered','Filtered')
+    title('X Axis Filtered Acceleration');xlabel('Time (s)');ylabel('Acceleration (g)');
+    
+    subplot(3,1,2);plot(unFilteredAccel.Time,squeeze(unFilteredAccel.Data(2,1,:)),filteredAccel.Time,squeeze(filteredAccel.Data(2,1,:)));
+    legend('unFiltered','Filtered')
+    title('Y Axis Filtered Acceleration');xlabel('Time (s)');ylabel('Acceleration (g)');
+    
+    subplot(3,1,3);plot(unFilteredAccel.Time,squeeze(unFilteredAccel.Data(3,1,:)),filteredAccel.Time,squeeze(filteredAccel.Data(3,1,:)));
+    legend('unFiltered','Filtered')
+    title('Z Axis Filtered Acceleration');xlabel('Time (s)');ylabel('Acceleration (g)');
 end

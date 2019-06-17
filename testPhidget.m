@@ -1,4 +1,9 @@
 
+accelActive = 1;
+gyroActive = 1;
+rangeActive = 0;
+
+
 coder.extrinsic('py.Accelerometer.Accelerometer');
 % addpath("C:\Program Files\MATLAB\R2018b\toolbox\matlab\external\interfaces\python");
 % addpath("C:\Program Files");
@@ -15,70 +20,100 @@ for i = 1:size(pathval,2)
 end
 
 % Create Accelerometer object
-accelPhidget = py.Accelerometer.Accelerometer;
-accelPhidget.setDeviceSerialNumber(int32(484118));
-accelPhidget.setIsHubPortDevice(int32(0));
+if accelActive
+    accelPhidget = py.Accelerometer.Accelerometer;
+    accelPhidget.setDeviceSerialNumber(int32(484118));
+    accelPhidget.setIsHubPortDevice(int32(0));
+end
 
 % Create a Gyroscope object
-gyroPhidget = py.Gyroscope.Gyroscope;
-gyroPhidget.setDeviceSerialNumber(int32(484118));
-gyroPhidget.setIsHubPortDevice(int32(0)); 
+if gyroActive
+    gyroPhidget = py.Gyroscope.Gyroscope;
+    gyroPhidget.setDeviceSerialNumber(int32(484118));
+    gyroPhidget.setIsHubPortDevice(int32(0)); 
+end
 
 % Create a Distance Sensor object
-distPhidget1 = py.DistanceSensor.DistanceSensor;
-distPhidget1.setDeviceSerialNumber(int32(538408));
-distPhidget1.setHubPort(int32(0));
+if rangeActive
+    distPhidget1 = py.DistanceSensor.DistanceSensor;
+    distPhidget1.setDeviceSerialNumber(int32(538408));
+    distPhidget1.setHubPort(int32(0));
 
-distPhidget2 = py.DistanceSensor.DistanceSensor;
-distPhidget2.setDeviceSerialNumber(int32(538408));
-distPhidget2.setHubPort(int32(2));
+    distPhidget2 = py.DistanceSensor.DistanceSensor;
+    distPhidget2.setDeviceSerialNumber(int32(538408));
+    distPhidget2.setHubPort(int32(1));
 
-distPhidget3 = py.DistanceSensor.DistanceSensor;
-distPhidget3.setDeviceSerialNumber(int32(538408));
-distPhidget3.setHubPort(int32(3));
+    distPhidget3 = py.DistanceSensor.DistanceSensor;
+    distPhidget3.setDeviceSerialNumber(int32(538408));
+    distPhidget3.setHubPort(int32(4));
 
-distPhidget4 = py.DistanceSensor.DistanceSensor;
-distPhidget4.setDeviceSerialNumber(int32(538408));
-distPhidget4.setHubPort(int32(5));
+    distPhidget4 = py.DistanceSensor.DistanceSensor;
+    distPhidget4.setDeviceSerialNumber(int32(538408));
+    distPhidget4.setHubPort(int32(5));
+end
 
 % Attach to the device
 try
-    accelPhidget.openWaitForAttachment(int32(5000));
-    gyroPhidget.openWaitForAttachment(int32(5000));
-%     distPhidget1.openWaitForAttachment(int32(5000));
-%     distPhidget2.openWaitForAttachment(int32(5000));
-%     distPhidget3.openWaitForAttachment(int32(5000));
-%     distPhidget4.openWaitForAttachment(int32(5000));
+    if accelActive
+        accelPhidget.openWaitForAttachment(int32(5000));
+    end
+    if gyroActive
+        gyroPhidget.openWaitForAttachment(int32(5000));
+    end
+    if rangeActive
+        distPhidget1.openWaitForAttachment(int32(5000));
+        distPhidget2.openWaitForAttachment(int32(5000));
+        distPhidget3.openWaitForAttachment(int32(5000));
+        distPhidget4.openWaitForAttachment(int32(5000));
+    end
 catch
     disp('Error attaching to Phidgets')
 end
 pause(30);
 
 % Set the rate at which the device will gather data
-accelPhidget.setDataInterval(int32(10));
-gyroPhidget.setDataInterval(int32(10));
-% distPhidget1.setDataInterval(int32(100));
-% distPhidget2.setDataInterval(int32(100));
-% distPhidget3.setDataInterval(int32(100));
-% distPhidget4.setDataInterval(int32(100));
+if accelActive
+    accelPhidget.setDataInterval(int32(10));
+end
+if gyroActive
+    gyroPhidget.setDataInterval(int32(10));
+end
+if rangeActive
+    distPhidget1.setDataInterval(int32(100));
+    distPhidget2.setDataInterval(int32(100));
+    distPhidget3.setDataInterval(int32(100));
+    distPhidget4.setDataInterval(int32(100));
+end
 
 disp('collecting data:')
 for i=1:100
-    accelMeasurement(i,:) = cell2mat(cell(accelPhidget.getAcceleration()));
-    rateMeasurement(i,:)  = cell2mat(cell(gyroPhidget.getAngularRate()));
-%     distMeasurement(i,1) = double(distPhidget1.getDistance());
-%     distMeasurement(i,2) = double(distPhidget2.getDistance());
-%     distMeasurement(i,3) = double(distPhidget1.getDistance());
-%     distMeasurement(i,4) = double(distPhidget2.getDistance());
+    if accelActive
+        accelMeasurement(i,:) = cell2mat(cell(accelPhidget.getAcceleration()));
+    end
+    if gyroActive
+        rateMeasurement(i,:)  = cell2mat(cell(gyroPhidget.getAngularRate()));
+    end
+    if rangeActive
+        distMeasurement(i,1) = double(distPhidget1.getDistance());
+        distMeasurement(i,2) = double(distPhidget2.getDistance());
+        distMeasurement(i,3) = double(distPhidget1.getDistance());
+        distMeasurement(i,4) = double(distPhidget2.getDistance());
+    end
     pause(.10);
 end
 
-accelPhidget.close();
-gyroPhidget.close();
-distPhidget1.close();
-distPhidget2.close();
-distPhidget3.close();
-distPhidget4.close();
+if accelActive
+    accelPhidget.close();
+end
+if gyroActive
+    gyroPhidget.close();
+end
+if rangeActive
+    distPhidget1.close();
+    distPhidget2.close();
+    distPhidget3.close();
+    distPhidget4.close();
+end
 clear accelPhidget gyroPhidget distPhidget1 distPhidget2 distPhidget3 distPhidget4
 
 

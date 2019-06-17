@@ -1,0 +1,5 @@
+﻿  driver.c
+z:\my documents\matlab\airtablesim\phidget\phidget_library_c\phidget_library_c\driver.c(26): warning C4047: 'function': 'PhidgetDistanceSensorHandle *' differs in levels of indirection from 'PhidgetDistanceSensorHandle (*)[4]'
+z:\my documents\matlab\airtablesim\phidget\phidget_library_c\phidget_library_c\driver.c(26): warning C4024: 'DistanceInit': different types for formal and actual parameter 1
+  Phidget_Library_C.vcxproj -> Z:\My Documents\MATLAB\AirTableSim\Phidget\Phidget_Library_C\x64\Debug\Phidget_Library_C.exe
+  Phidget_Library_C.vcxproj -> Z:\My Documents\MATLAB\AirTableSim\Phidget\Phidget_Library_C\x64\Debug\Phidget_Library_C.pdb (Full PDB)

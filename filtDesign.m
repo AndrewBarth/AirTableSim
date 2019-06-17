@@ -1,7 +1,17 @@
 
-time   = sensedRate.Time;
-signal = squeeze(sensedRate.Data(1,1,:));
+% time   = sensedRate.Time;
+% signal = squeeze(sensedRate.Data(1,1,:));
 % signal = squeeze(sensedAccel.Data(1,1,:));
+
+gyrotest1 = load('gyroTest1.csv','-ascii');
+gyrotest2 = load('gyroTest2.csv','-ascii');
+gyrotest3 = load('gyroTest3.csv','-ascii');
+gyrotest4 = load('gyroTest4.csv','-ascii');
+
+time = gyrotest1(:,1)/1000;
+signal = gyrotest1(:,6);
+
+
 npts = length(time);
 Fs = round(1/((time(end)-time(1))/npts));  % Hz
 
@@ -20,15 +30,17 @@ freq = Fs*(0:(npts/2))/npts;
 % plot the amplitude spectrum
 figure;plot(freq,p1)
 
-fc = 0.1;
-fc = 10;
+fc = 1.0;
+% fc = 10;
 [b,a] = butter(2,fc/(Fs/2));
 
 fsignal = filter(b,a,signal);
+fsignal1 = filtfilt(b,a,signal);
 
 figure;
 plot(time,signal); hold all;
 plot(time,fsignal);
+plot(time,fsignal1);
 title('The filtered signal');
 legend('Signal','Filtered Signal');
 
