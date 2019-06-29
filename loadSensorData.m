@@ -1,14 +1,24 @@
 
 dtr = pi/180;
 
+%% Filter Coefficients
+AccelIIR_Num = [0.020083365564211   0.040166731128423   0.020083365564211];
+AccelIIR_Den = [1.000000000000000  -1.561018075800718   0.641351538057563];
+
 %% Platform Data
 platformWidth  = 18*0.0254;
 platformLength = 18*0.0254;
 
 %% IMU Data
-Euler_IMU_To_Body = [0 0 0];
-M_IMU_To_Body = euler2mat(Euler_IMU_To_Body);
+Euler_IMU_To_Body = [0.008240263376851 0.005515815051736 0.000022726070595];
+M_IMU_To_Body = ZRot(pi)*EulerToDCM_321(Euler_IMU_To_Body);
 Q_IMU_To_Body = mat2quat(M_IMU_To_Body);
+
+%% Magnetic Field Data
+NorthAngle = -84*dtr; % Angle between X axis of table and magnetic North
+M_North_To_ECEF = [ cos(NorthAngle) sin(NorthAngle) 0; ...
+                   -sin(NorthAngle) cos(NorthAngle) 0; ...
+                    0 0 1];
 
 %% Range Sensors
 % Center point of sensor
@@ -19,7 +29,8 @@ rangeSensorLocBody(4,:) = [0 -0.5*platformLength 0];
 
 % Angle and field of view
 rangeSensorAngBody = [0; 90*dtr; 180*dtr; 270*dtr];
-rangeSensorFOV = [15*dtr; 15*dtr; 15*dtr; 15*dtr];
+% rangeSensorFOV = [4.4*dtr; 4.4*dtr; 4.4*dtr; 4.4*dtr];
+rangeSensorFOV = [0*dtr; 0*dtr; 0*dtr; 0*dtr];
 
 for i=1:4
     rangeSensorAngMinBody(i) = rangeSensorAngBody(i)-0.5*rangeSensorFOV(i);

@@ -8,7 +8,7 @@ VSS_SIMDYNAMICS = Simulink.Variant('VSS_MODE==0');
 VSS_HWSENSOR    = Simulink.Variant('VSS_MODE==1');
 VSS_SIMFILTERED = Simulink.Variant('VSS_MODE==2');
 VSS_SIMSENSOR   = Simulink.Variant('VSS_MODE==3');
-VSS_MODE = 0;
+VSS_MODE = 1;
 
 
 

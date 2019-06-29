@@ -22,7 +22,7 @@ function [m,Izz] = planarMassProperties()
 
 in2m = 0.0254;
 
-m = [10]; 
+m = [11.4]; 
 
 % Dimensions of sled
 width = 18*in2m;

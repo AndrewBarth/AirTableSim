@@ -35,19 +35,19 @@ title('Reference Trajectory Tracking: Angular Rate');xlabel('Time (s)');ylabel('
 legend('Reference','Actual')
 
 figure;
-subplot(2,1,1);plot(error1.Time,error1.Data(:,1),error1.Time,error1.Data(:,2))
+subplot(2,1,1);plot(controlError.Time,controlError.Data(:,1),controlError.Time,controlError.Data(:,2))
 title('Control Error ECEF: X Y Position');xlabel('Time (s)');ylabel('Position Error (m)')
 legend('X','Y')
 
-subplot(2,1,2);plot(error1.Time,error1.Data(:,6))
+subplot(2,1,2);plot(controlError.Time,controlError.Data(:,6))
 title('Control Error ECEF: Theta');xlabel('Time (s)');ylabel('Angle (deg)')
 
 figure;
-subplot(2,1,1);plot(PosError.Time,PosError.Data(:,1),PosError.Time,PosError.Data(:,2))
+subplot(2,1,1);plot(posError.Time,posError.Data(:,1),posError.Time,posError.Data(:,2))
 title('Control Error Body: X Y Position');xlabel('Time (s)');ylabel('Position Error (m)')
 legend('X','Y')
 
-subplot(2,1,2);plot(PosError.Time,PosError.Data(:,6))
+subplot(2,1,2);plot(posError.Time,posError.Data(:,6))
 title('Control Error Body: Theta');xlabel('Time (s)');ylabel('Angle (deg)')
 
 figure;

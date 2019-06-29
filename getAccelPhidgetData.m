@@ -23,7 +23,7 @@ function [accelMeasurement,rateMeasurement,accelTimestamp,rateTimestamp]= getAcc
 % References:
 %    See phidgets.com website for API details
 %    This rountine was constructed for the PhidgetSpatial Precision
-%    3/3/3 Basic sensor (ID 1042_OB)
+%    3/3/3 High Resolution sensor (ID 1044_1B)
 %
 % Author: Andrew Barth
 %
@@ -40,12 +40,13 @@ function [accelMeasurement,rateMeasurement,accelTimestamp,rateTimestamp]= getAcc
 % Once attach read the latest data from the sensor
     accelStatus = int64(accelPhidget.getAttached());
     if accelStatus == 0
-        accelPhidget.setDeviceSerialNumber(int32(484118));
+%         accelPhidget.setDeviceSerialNumber(int32(484118));
+        accelPhidget.setDeviceSerialNumber(int32(595407));
         accelPhidget.setIsHubPortDevice(int32(0));
         accelPhidget.openWaitForAttachment(int32(5000));
         pause(5);
         % The min data interval for this sensor is 4 ms
-        accelPhidget.setDataInterval(int32(10));
+        accelPhidget.setDataInterval(int32(25));
         accelMeasurement(:)  = cell2mat(cell(accelPhidget.getAcceleration()));
         accelTimestamp        = double(accelPhidget.getTimestamp());
     else
@@ -55,12 +56,13 @@ function [accelMeasurement,rateMeasurement,accelTimestamp,rateTimestamp]= getAcc
     
     gyroStatus = int64(gyroPhidget.getAttached());
     if gyroStatus == 0
-        gyroPhidget.setDeviceSerialNumber(int32(484118));
+%         gyroPhidget.setDeviceSerialNumber(int32(484118));
+        gyroPhidget.setDeviceSerialNumber(int32(595407));
         gyroPhidget.setIsHubPortDevice(int32(0));
         gyroPhidget.openWaitForAttachment(int32(5000));
         pause(5);
         % The min data interval for this sensor is 4 ms
-        accelPhidget.setDataInterval(int32(10));
+        accelPhidget.setDataInterval(int32(25));
         rateMeasurement(:)   = cell2mat(cell(gyroPhidget.getAngularRate()));
         rateTimestamp        = double(gyroPhidget.getTimestamp());
     else

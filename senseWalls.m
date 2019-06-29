@@ -1,4 +1,4 @@
-function [range] = senseWalls(state,rangeSensorLocBody,rangeSensorAngBody,rangeSensorFOV,wallBounds)
+function [range,rangeArray] = senseWalls(state,rangeSensorLocBody,rangeSensorAngBody,rangeSensorFOV,wallBounds)
 % Compute the distance to the each wall
 % 
 % Inputs: state              state data structure
@@ -8,7 +8,8 @@ function [range] = senseWalls(state,rangeSensorLocBody,rangeSensorAngBody,rangeS
 %         rangeSensorFOV     field of view of each sensor
 %         wallBounds         end points of each wall in ECEF frame mx4
 %
-% Output: range              minimum distances from each sensor nxm
+% Output: range              minimum distances from each sensor nx1
+%         rangeArray         minimum distances to each wall
 %
 % Assumptions and Limitations:
 %     Rows in wallDistTable are the walls
@@ -40,7 +41,8 @@ function [range] = senseWalls(state,rangeSensorLocBody,rangeSensorAngBody,rangeS
 %    Jun 17 2019 - Initial version
 %
 
-range = zeros(4,4);
+range = zeros(4,1);
+rangeArray = zeros(4,4);
 
 % Extract required state data
 R_Sys_ECEF     = state.TranState_ECEF.R_Sys_ECEF;
@@ -83,7 +85,6 @@ for isens = 1:4
 end
 
 % Compute the minimum distance for each sensor
-range = zeros(4,4);
 val = zeros(3,1);
 idx = zeros(3,1);
 for isens = 1:4
@@ -91,8 +92,9 @@ for isens = 1:4
     [val(2), idx(2)] = min(distanceMin(isens,:));
     [val(3), idx(3)] = min(distanceMax(isens,:));
     
-    [valT idxT] = min(val);
-    range(isens,idx(idxT)) = val(idxT);
+    [valT, idxT] = min(val);
+    rangeArray(isens,idx(idxT)) = val(idxT);
+    range(isens) = val(idxT);
    
 end
 
@@ -126,7 +128,7 @@ function [distance] = raySegmentIntersect(line,ray,rayVec)
     
     if rxs ~= 0 && t >= 0 && u >= 0 && u <= 1
 %         intersect = 1;
-        distance = norm(rayStart + t*rayDir);
+        distance = norm(t*rayDir);
     else
 %         intersect = 0;
         distance = 999;

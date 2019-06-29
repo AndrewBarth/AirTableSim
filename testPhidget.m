@@ -1,6 +1,7 @@
 
 accelActive = 1;
 gyroActive = 1;
+magActive = 1;
 rangeActive = 0;
 
 
@@ -22,15 +23,34 @@ end
 % Create Accelerometer object
 if accelActive
     accelPhidget = py.Accelerometer.Accelerometer;
-    accelPhidget.setDeviceSerialNumber(int32(484118));
+    accelPhidget.setDeviceSerialNumber(int32(595407));
     accelPhidget.setIsHubPortDevice(int32(0));
+    
+    accelPhidget2 = py.Accelerometer.Accelerometer;
+    accelPhidget2.setDeviceSerialNumber(int32(484118));
+    accelPhidget2.setIsHubPortDevice(int32(0));
 end
 
 % Create a Gyroscope object
 if gyroActive
     gyroPhidget = py.Gyroscope.Gyroscope;
-    gyroPhidget.setDeviceSerialNumber(int32(484118));
+    gyroPhidget.setDeviceSerialNumber(int32(595407));
     gyroPhidget.setIsHubPortDevice(int32(0)); 
+    
+    gyroPhidget2 = py.Gyroscope.Gyroscope;
+    gyroPhidget2.setDeviceSerialNumber(int32(484118));
+    gyroPhidget2.setIsHubPortDevice(int32(0)); 
+end
+
+% Create a Magnetometer object
+if magActive
+    magPhidget = py.Magnetometer.Magnetometer;
+    magPhidget.setDeviceSerialNumber(int32(595407));
+    magPhidget.setIsHubPortDevice(int32(0));
+    
+    magPhidget2 = py.Magnetometer.Magnetometer;
+    magPhidget2.setDeviceSerialNumber(int32(484118));
+    magPhidget2.setIsHubPortDevice(int32(0));
 end
 
 % Create a Distance Sensor object
@@ -56,9 +76,18 @@ end
 try
     if accelActive
         accelPhidget.openWaitForAttachment(int32(5000));
+        
+        accelPhidget2.openWaitForAttachment(int32(5000));
     end
     if gyroActive
         gyroPhidget.openWaitForAttachment(int32(5000));
+        
+        gyroPhidget2.openWaitForAttachment(int32(5000));
+    end
+    if magActive
+        magPhidget.openWaitForAttachment(int32(5000));
+        
+        magPhidget2.openWaitForAttachment(int32(5000));
     end
     if rangeActive
         distPhidget1.openWaitForAttachment(int32(5000));
@@ -74,9 +103,18 @@ pause(30);
 % Set the rate at which the device will gather data
 if accelActive
     accelPhidget.setDataInterval(int32(10));
+    
+    accelPhidget2.setDataInterval(int32(10));
 end
 if gyroActive
     gyroPhidget.setDataInterval(int32(10));
+    
+    gyroPhidget2.setDataInterval(int32(10));
+end
+if magActive
+    magPhidget.setDataInterval(int32(10));
+    
+    magPhidget2.setDataInterval(int32(10));
 end
 if rangeActive
     distPhidget1.setDataInterval(int32(100));
@@ -89,9 +127,18 @@ disp('collecting data:')
 for i=1:100
     if accelActive
         accelMeasurement(i,:) = cell2mat(cell(accelPhidget.getAcceleration()));
+        
+        accelMeasurement2(i,:) = cell2mat(cell(accelPhidget2.getAcceleration()));
     end
     if gyroActive
         rateMeasurement(i,:)  = cell2mat(cell(gyroPhidget.getAngularRate()));
+        
+        rateMeasurement2(i,:)  = cell2mat(cell(gyroPhidget2.getAngularRate()));
+    end
+    if magActive
+        magFieldMeasurement(i,:)  = cell2mat(cell(magPhidget.getMagneticField()));
+        
+        magFieldMeasurement2(i,:)  = cell2mat(cell(magPhidget2.getMagneticField()));
     end
     if rangeActive
         distMeasurement(i,1) = double(distPhidget1.getDistance());
@@ -104,9 +151,18 @@ end
 
 if accelActive
     accelPhidget.close();
+    
+    accelPhidget2.close();
 end
 if gyroActive
     gyroPhidget.close();
+    
+    gyroPhidget2.close();
+end
+if magActive
+    magPhidget.close();
+    
+    magPhidget2.close();
 end
 if rangeActive
     distPhidget1.close();
@@ -114,7 +170,7 @@ if rangeActive
     distPhidget3.close();
     distPhidget4.close();
 end
-clear accelPhidget gyroPhidget distPhidget1 distPhidget2 distPhidget3 distPhidget4
+clear accelPhidget gyroPhidget magPhidget distPhidget1 distPhidget2 distPhidget3 distPhidget4
 
 
 

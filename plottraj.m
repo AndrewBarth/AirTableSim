@@ -14,8 +14,8 @@ theta = stateOutBus.RotState_Body_ECEF.Body_To_ECEF_Euler.Data(:,3);
 % Define the box to be drawn
 box_length = 0.45;  % m
 box_width = 0.45;   % m
-box_length = 1.5;  % m
-box_width = 0.45;   % m
+% box_length = 1.5;  % m
+% box_width = 0.45;   % m
 h_x = box_length/2;
 h_y = box_width/2;
 

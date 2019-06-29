@@ -3,7 +3,7 @@
 
 nThruster = 8;
 % nominalThrust = 1.0;   % N
-nominalThrust = 0.75;   % N
+nominalThrust = 0.65;   % N
 % nominalThrust = 0.15;   % N
 
 thrusterData.minOnTime = 0.05;
@@ -30,9 +30,10 @@ platformLength = 18*0.0254;  % m
 %    4         1
 %
 %
-%    5         8
-%     6       7
-%
+%    5         8       
+%     6       7          ^
+%                        | 
+%  + X -->             + Y 
                    
 thrusterLocation  = [ platformWidth/2  platformLength/2 0;  ...
                       platformWidth/2  platformLength/2 0;  ...

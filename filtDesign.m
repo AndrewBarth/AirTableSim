@@ -3,19 +3,26 @@
 % signal = squeeze(sensedRate.Data(1,1,:));
 % signal = squeeze(sensedAccel.Data(1,1,:));
 
-gyrotest1 = load('gyroTest1.csv','-ascii');
-gyrotest2 = load('gyroTest2.csv','-ascii');
-gyrotest3 = load('gyroTest3.csv','-ascii');
-gyrotest4 = load('gyroTest4.csv','-ascii');
+% gyrotest1 = load('gyroTest1.csv','-ascii');
+% gyrotest2 = load('gyroTest2.csv','-ascii');
+% gyrotest3 = load('gyroTest3.csv','-ascii');
+% gyrotest4 = load('gyroTest4.csv','-ascii');
 
-time = gyrotest1(:,1)/1000;
-signal = gyrotest1(:,6);
+% time = gyrotest1(:,1)/1000;
+% signal = gyrotest1(:,6);
 
+% time   = unFilteredAccel.Time;
+% signal = squeeze(unFilteredAccel.Data(1,1,:));
+% signal = squeeze(unFilteredAccel.Data(2,1,:));
+
+time = data1.rt_tout;
+signal = data1.rt_yout.signals(2).values(:,1);
+% signal = data5.rt_yout.signals(2).values(:,6);
 
 npts = length(time);
 Fs = round(1/((time(end)-time(1))/npts));  % Hz
 
-figure;plot(time,signal);
+% figure;plot(time,signal);
 
 ff = fft(signal);
 
@@ -30,10 +37,11 @@ freq = Fs*(0:(npts/2))/npts;
 % plot the amplitude spectrum
 figure;plot(freq,p1)
 
-fc = 1.0;
-% fc = 10;
+% fc = 1.0;
+% fc = 0.2;
+fc = 10;
 [b,a] = butter(2,fc/(Fs/2));
-
+% [b,a] = butter(2,[.01 .2]/(Fs/2));
 fsignal = filter(b,a,signal);
 fsignal1 = filtfilt(b,a,signal);
 
@@ -44,6 +52,10 @@ plot(time,fsignal1);
 title('The filtered signal');
 legend('Signal','Filtered Signal');
 
+figure;
+plot(time,fsignal);hold all
+plot(time,fsignal1);
+title('Just the filtered signal')
 % Fs = 1000;            % Sampling frequency                    
 % T = 1/Fs;             % Sampling period       
 % L = 1500;             % Length of signal
