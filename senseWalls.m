@@ -46,7 +46,8 @@ rangeArray = zeros(4,4);
 
 % Extract required state data
 R_Sys_ECEF     = state.TranState_ECEF.R_Sys_ECEF;
-Q_Body_To_ECEF = state.RotState_Body_ECEF.Body_To_ECEF_Quat;
+Q_ECEF_To_Body = state.RotState_Body_ECEF.ECEF_To_Body_Quat;
+Q_Body_To_ECEF = quatconj(Q_ECEF_To_Body');
 
 sensorAngMinBody = zeros(4,1);
 sensorAngMaxBody = zeros(4,1);
@@ -69,10 +70,10 @@ for isens = 1:4
     sensorVecMaxBody(isens,:) = [cos(sensorAngMaxBody(isens)) sin(sensorAngMaxBody(isens)) 0];
     
     % Compute the sensor information in the ECEF frame
-    sensorLocECEF(isens,:) = R_Sys_ECEF' + quatrotate(rangeSensorLocBody(isens,:)',Q_Body_To_ECEF');
-    sensorVecCenECEF(isens,:) = quatrotate(sensorVecBody(isens,:)',Q_Body_To_ECEF');
-    sensorVecMinECEF(isens,:) = quatrotate(sensorVecMinBody(isens,:)',Q_Body_To_ECEF');
-    sensorVecMaxECEF(isens,:) = quatrotate(sensorVecMaxBody(isens,:)',Q_Body_To_ECEF');
+    sensorLocECEF(isens,:) = R_Sys_ECEF' + quatrotate(rangeSensorLocBody(isens,:)',Q_Body_To_ECEF);
+    sensorVecCenECEF(isens,:) = quatrotate(sensorVecBody(isens,:)',Q_Body_To_ECEF);
+    sensorVecMinECEF(isens,:) = quatrotate(sensorVecMinBody(isens,:)',Q_Body_To_ECEF);
+    sensorVecMaxECEF(isens,:) = quatrotate(sensorVecMaxBody(isens,:)',Q_Body_To_ECEF);
 end
 
 % Find which walls are in view of each sensor

@@ -53,12 +53,12 @@ end
 
 if exist('sensorData','var')
     figure;
-    plot(sensorData.Time,squeeze(sensorData.Data(11:13,1,:)));
+    plot(sensorData.Time,squeeze(sensorData.Data(:,11:13)));
     legend('X','Y','Z');
     title('Magnetic Field Data');xlabel('Time (s)');ylabel('Magnetic Field (gauss)');
     
     figure;
-    plot(sensorData.Time,squeeze(sensorData.Data(7:10,1,:)));
+    plot(sensorData.Time,squeeze(sensorData.Data(:,7:10)));
     legend('Sensor 1','Sensor 2','Sensor 3','Sensor 4');
     title('Range Data Data');xlabel('Time (s)');ylabel('Range (m)');
 end

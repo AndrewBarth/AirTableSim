@@ -3,6 +3,24 @@ controlRate = 0.025;
 load('ConfigSet_RPi_DynamicsRate.mat');
 load('ConfigSet_RPi_ControlRate.mat');
 
+controlType = 1;   % 1 sliding mode, 2 PID
+% Kp = [500 500 0 0 0 20];
+% Kd = [500 500 0 0 0 8];
+% Ki = [0 0 0 0 0 0];
+
+Kp = [500.0000  246.1321 0 0 0 50.1701];
+Kd = [500.0000  501.0938 0 0 0 18.4778];
+Ki = [1.0000    1.0313   0 0 0 58.1181];
+
+% Kp = [23.0083  241.1549 0 0 0 20.0000];
+% Kd = [500.0000 331.8547 0 0 0  8.0000];
+% Ki = [1.0000    0.5000  0 0 0  0];
+
+
+% SMGains = [2 2 2 2 2 4 1];
+% SMGains = [1.6264    1.5585    4.8510    8.0133    1.6984    4.8066    1.2611];
+SMGains = [2.0801    3.0489    8.9333    4.9881    3.0029    9.5293    0.6944    2.9403    3.0662];
+
 %% Configure sensor setup
 VSS_SIMDYNAMICS = Simulink.Variant('VSS_MODE==0');
 VSS_HWSENSOR    = Simulink.Variant('VSS_MODE==1');
@@ -10,12 +28,41 @@ VSS_SIMFILTERED = Simulink.Variant('VSS_MODE==2');
 VSS_SIMSENSOR   = Simulink.Variant('VSS_MODE==3');
 VSS_MODE = 1;
 
+%% Control Output Bus
+clear elems;
+elems(1) = Simulink.BusElement;
+elems(1).Name = 'controlSignal';
+elems(1).Dimensions = 6;
+elems(1).DimensionsMode = 'Fixed';
+elems(1).DataType = 'double';
+elems(1).SampleTime = -1;
+elems(1).Complexity = 'real';
 
+elems(2) = Simulink.BusElement;
+elems(2).Name = 'controlError';
+elems(2).Dimensions = 12;
+elems(2).DimensionsMode = 'Fixed';
+elems(2).DataType = 'double';
+elems(2).SampleTime = -1;
+elems(2).Complexity = 'real';
+
+elems(3) = Simulink.BusElement;
+elems(3).Name = 'posError';
+elems(3).Dimensions = 6;
+elems(3).DimensionsMode = 'Fixed';
+elems(3).DataType = 'double';
+elems(3).SampleTime = -1;
+elems(3).Complexity = 'real';
+
+ControlOutBus = Simulink.Bus;
+ControlOutBus.Elements = elems;
+
+ControlOutStruct  = Simulink.Bus.createMATLABStruct('ControlOutBus');
 
 %% Rotational State Bus
 clear elems;
 elems(1) = Simulink.BusElement;
-elems(1).Name = 'Body_To_ECEF_Euler';
+elems(1).Name = 'ECEF_To_Body_Euler';
 elems(1).Dimensions = 3;
 elems(1).DimensionsMode = 'Fixed';
 elems(1).DataType = 'double';
@@ -23,7 +70,7 @@ elems(1).SampleTime = -1;
 elems(1).Complexity = 'real';
 
 elems(2) = Simulink.BusElement;
-elems(2).Name = 'Body_To_ECEF_Quat';
+elems(2).Name = 'ECEF_To_Body_Quat';
 elems(2).Dimensions = 4;
 elems(2).DimensionsMode = 'Fixed';
 elems(2).DataType = 'double';

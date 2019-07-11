@@ -12,7 +12,7 @@ platformLength = 18*0.0254;
 %% IMU Data
 Euler_IMU_To_Body = [0.008240263376851 0.005515815051736 0.000022726070595];
 M_IMU_To_Body = ZRot(pi)*EulerToDCM_321(Euler_IMU_To_Body);
-Q_IMU_To_Body = mat2quat(M_IMU_To_Body);
+Q_IMU_To_Body = DCMToquat(M_IMU_To_Body);
 
 %% Magnetic Field Data
 NorthAngle = -84*dtr; % Angle between X axis of table and magnetic North

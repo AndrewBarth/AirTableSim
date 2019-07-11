@@ -24,7 +24,7 @@ zeroRate = 0.075; % 1 deg/s
 
 pos = navState.TranState_ECEF.R_Sys_ECEF';
 vel = navState.TranState_ECEF.V_Sys_ECEF';
-att = navState.RotState_Body_ECEF.Body_To_ECEF_Euler';
+att = navState.RotState_Body_ECEF.ECEF_To_Body_Euler';
 rate = navState.RotState_Body_ECEF.BodyRates_wrt_ECEF_In_Body';
 
 refPos  = refTraj(end,2:4);
@@ -39,6 +39,7 @@ rateErr = norm(refRate - rate);
 
 if posErr < zeroPos && velErr < zeroVel && attErr < zeroAtt && rateErr < zeroRate
     outControlMode = 2;
+%     outControlMode = inControlMode;
 else
     outControlMode = inControlMode;
 end

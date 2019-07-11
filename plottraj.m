@@ -9,7 +9,7 @@ grid on
 time = stateOutBus.TranState_ECEF.R_Sys_ECEF.Time;
 xpos = stateOutBus.TranState_ECEF.R_Sys_ECEF.Data(:,1);
 ypos = stateOutBus.TranState_ECEF.R_Sys_ECEF.Data(:,2);
-theta = stateOutBus.RotState_Body_ECEF.Body_To_ECEF_Euler.Data(:,3);
+theta = stateOutBus.RotState_Body_ECEF.ECEF_To_Body_Euler.Data(:,3);
 
 % Define the box to be drawn
 box_length = 0.45;  % m

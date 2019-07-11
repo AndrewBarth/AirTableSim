@@ -49,7 +49,7 @@ end
 Mnet = Mext + Meff;
 
 % Get attitude quaternion
-quat = euler2quat(q);
+quat = EulerToquat_321(q);
 qs = quat(1);
 qv = quat(2:4);
 

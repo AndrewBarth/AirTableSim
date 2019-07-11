@@ -1,7 +1,7 @@
 rtd = 180/pi;
 ECEFpos = stateOutBus.TranState_ECEF.R_Sys_ECEF;
 ECEFvel = stateOutBus.TranState_ECEF.V_Sys_ECEF;
-EulerAngles = stateOutBus.RotState_Body_ECEF.Body_To_ECEF_Euler;
+EulerAngles = stateOutBus.RotState_Body_ECEF.ECEF_To_Body_Euler;
 BodyRates = stateOutBus.RotState_Body_ECEF.BodyRates_wrt_ECEF_In_Body;
 
 figure;
