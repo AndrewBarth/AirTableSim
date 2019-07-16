@@ -9,6 +9,15 @@ AccelIIR_Den = [1.000000000000000  -1.561018075800718   0.641351538057563];
 platformWidth  = 18*0.0254;
 platformLength = 18*0.0254;
 
+%% Image Sensor Data
+rangeTable = [2500 5000];
+cameraVec = [1 0 0];
+cameraLoc = [0.5*platformWidth 0];
+
+%% Target locations
+targetLoc(1,:) = [1 3];
+targetVec(1,:) = [0 -1 0];
+
 %% IMU Data
 Euler_IMU_To_Body = [0.008240263376851 0.005515815051736 0.000022726070595];
 M_IMU_To_Body = ZRot(pi)*EulerToDCM_321(Euler_IMU_To_Body);
