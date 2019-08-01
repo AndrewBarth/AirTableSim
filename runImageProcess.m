@@ -8,11 +8,12 @@ range = 2.5;   % m
 
 % camObj = webcam('Logitech HD Webcam C310');
 % imgO = snapshot(camObj);
-
+% imshow(imgO)
 % imaqhwinfo
+
 adaptorname = 'winvideo';
-% camObj = imaq.VideoDevice(adaptorname);
-camObj = imaq.VideoDevice('winvideo');
+camObj = imaq.VideoDevice(adaptorname);
+% camObj = imaq.VideoDevice('winvideo');
 
 while true
 [theta,BW,imgO,x,quality] = imageProcess(camObj,range,rangeTable);

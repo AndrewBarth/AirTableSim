@@ -3,6 +3,8 @@ controlRate = 0.025;
 load('ConfigSet_RPi_DynamicsRate.mat');
 load('ConfigSet_RPi_ControlRate.mat');
 
+addpath('utilities','-begin');
+
 controlType = 1;   % 1 sliding mode, 2 PID
 % Kp = [500 500 0 0 0 20];
 % Kd = [500 500 0 0 0 8];
@@ -26,7 +28,7 @@ VSS_SIMDYNAMICS = Simulink.Variant('VSS_MODE==0');
 VSS_HWSENSOR    = Simulink.Variant('VSS_MODE==1');
 VSS_SIMFILTERED = Simulink.Variant('VSS_MODE==2');
 VSS_SIMSENSOR   = Simulink.Variant('VSS_MODE==3');
-VSS_MODE = 1;
+VSS_MODE = 0;
 
 %% Control Output Bus
 clear elems;
