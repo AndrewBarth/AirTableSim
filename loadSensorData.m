@@ -18,6 +18,10 @@ cameraLoc = [0.5*platformWidth 0];
 targetLoc(1,:) = [1 3];
 targetVec(1,:) = [0 -1 0];
 
+%% Tracking camera Data
+M_Tracker_To_Body = [1 0 0; 0 1 0; 0 0 1];
+R_Tracker_To_ECEF = [2 0.5 0];
+
 %% IMU Data
 Euler_IMU_To_Body = [0.008240263376851 0.005515815051736 0.000022726070595];
 M_IMU_To_Body = ZRot(pi)*EulerToDCM_321(Euler_IMU_To_Body);

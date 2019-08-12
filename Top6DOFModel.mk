@@ -2,7 +2,7 @@
 ## Makefile generated for Simulink model 'Top6DOFModel'. 
 ## 
 ## Makefile     : Top6DOFModel.mk
-## Generated on : Thu Jun 06 12:23:56 2019
+## Generated on : Fri Jul 26 08:36:22 2019
 ## MATLAB Coder version: 4.1 (R2018b)
 ## 
 ## Build Info:
@@ -35,17 +35,17 @@ ARCH                      = glnx
 SOLVER                    = 
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0
-TGT_FCN_LIB               = None
+TGT_FCN_LIB               = ISO_C++
 MODEL_HAS_DYNAMICALLY_LOADED_SFCNS = 0
 RELATIVE_PATH_TO_ANCHOR   = ..
 C_STANDARD_OPTS           = 
 CPP_STANDARD_OPTS         = 
 SHARED_SRC_DIR            = ../slprj/ert/_sharedutils
-SHARED_SRC                = $(SHARED_SRC_DIR)/*.c
+SHARED_SRC                = $(SHARED_SRC_DIR)/*.cpp
 SHARED_BIN_DIR            = ../slprj/ert/_sharedutils
 SHARED_LIB                = $(SHARED_BIN_DIR)/rtwshared.lib
 SHARED_OBJS               =  \
-$(addprefix $(join $(SHARED_BIN_DIR),/), $(addsuffix .c.o, $(basename $(notdir $(wildcard $(SHARED_SRC_DIR)/*.c)))))
+$(addprefix $(join $(SHARED_BIN_DIR),/), $(addsuffix .cpp.o, $(basename $(notdir $(wildcard $(SHARED_SRC_DIR)/*.cpp)))))
 
 ###########################################################################
 ## TOOLCHAIN SPECIFICATIONS
@@ -139,6 +139,7 @@ CFLAGS               = -c \
                        -O2
 CPPFLAGS             = -c \
                        -MMD -MP -MF"$(@:%.o=%.dep)" -MT"$@"  \
+                       -std=c++11 \
                        -O2
 CPP_LDFLAGS          = -lrt -lpthread -ldl
 CPP_SHAREDLIB_LDFLAGS  = -shared  \
@@ -189,19 +190,21 @@ BUILD_TYPE = "Top-Level Standalone Executable"
 ## INCLUDE PATHS
 ###########################################################################
 
-INCLUDES_BUILDINFO = -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/UseHWSensorData -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/TranslationalDynamics -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/ThrusterModel0 -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/ReactionWheel0 -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/PIDControl -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/AttitudeDynamics -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/ApproachControl -I$(START_DIR) -I$(START_DIR)/Top6DOFModel_ert_rtw -I$(MATLAB_ROOT)/extern/include -I$(MATLAB_ROOT)/simulink/include -I$(MATLAB_ROOT)/rtw/c/src -I$(MATLAB_ROOT)/rtw/c/src/ext_mode/common -I$(MATLAB_ROOT)/rtw/c/ert -I$(START_DIR)/slprj/ert/_sharedutils -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2018b/toolbox/realtime/targets/raspi/include -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2018b/toolbox/realtime/targets/raspi/server -I$(MATLAB_ROOT)/toolbox/target/codertarget/rtos/inc -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2018b/toolbox/target/shared/file_logging/include
+INCLUDES_BUILDINFO = -I$(MATLAB_WORKSPACE)/C/Program_Files/MATLAB/R2018b/toolbox/shared/spc/src_ml/extern/include -I$(MATLAB_WORKSPACE)/C/Program_Files/MATLAB/R2018b/toolbox/imaq/imaqblks/include -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/UseHWSensorData -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/TranslationalDynamics -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/ThrusterModel0 -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/SlidingModeControl -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/ReactionWheel0 -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/PIDControl -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/AttitudeDynamics -I$(MATLAB_WORKSPACE)/Z/My_Documents/MATLAB/AirTableSim/slprj/ert/ApproachControl -I$(START_DIR) -I$(START_DIR)/Top6DOFModel_ert_rtw -I$(MATLAB_ROOT)/extern/include -I$(MATLAB_ROOT)/simulink/include -I$(MATLAB_ROOT)/rtw/c/src -I$(MATLAB_ROOT)/rtw/c/src/ext_mode/common -I$(MATLAB_ROOT)/rtw/c/ert -I$(START_DIR)/slprj/ert/_sharedutils -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2018b/toolbox/realtime/targets/raspi/include -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2018b/toolbox/realtime/targets/raspi/server -I$(MATLAB_ROOT)/toolbox/target/codertarget/rtos/inc -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2018b/toolbox/target/shared/file_logging/include
 
+INCLUDES_OPENCV = -I/usr/local/include/opencv4
 INCLUDES_SERIAL = -I$(SERIAL_DIR)
 INCLUDES_PHIDGET = -I$(PHIDGET_DIR)
-
-INCLUDES = $(INCLUDES_SERIAL) $(INCLUDES_PHIDGET) $(INCLUDES_BUILDINFO)
+INCLUDES_IMAGE = -I$(IMAGE_DIR)
+INCLUDES_VICON = -I$(VICON_DIR)
+INCLUDES = $(INCLUDES_OPENCV) $(INCLUDES_SERIAL) $(INCLUDES_PHIDGET) $(INCLUDES_IMAGE) $(INCLUDES_VICON) $(INCLUDES_BUILDINFO)
 
 ###########################################################################
 ## DEFINES
 ###########################################################################
 
-DEFINES_ = -DMODEL=Top6DOFModel -DNUMST=2 -DNCSTATES=0 -DHAVESTDIO -DMODEL_HAS_DYNAMICALLY_LOADED_SFCNS=0 -DCLASSIC_INTERFACE=0 -DALLOCATIONFCN=0 -DTID01EQ=0 -DTERMFCN=1 -DONESTEPFCN=1 -DMAT_FILE=1 -DMULTI_INSTANCE_CODE=0 -DINTEGER_CODE=0 -DMT=1 -DARM_PROJECT -D_USE_TARGET_UDP_ -D_RUNONTARGETHARDWARE_BUILD_ -DSTACK_SIZE=64 -D__MW_TARGET_USE_HARDWARE_RESOURCES_H__ -DRT -DMAT_FILE_LOC=/home/pi -DMAX_MATFILE_NAME_LEN=64
-DEFINES_BUILD_ARGS = -DCLASSIC_INTERFACE=0 -DALLOCATIONFCN=0 -DTERMFCN=1 -DONESTEPFCN=1 -DMAT_FILE=1 -DMULTI_INSTANCE_CODE=0 -DINTEGER_CODE=0 -DMT=1
+DEFINES_ = -DMODEL=Top6DOFModel -DNUMST=2 -DNCSTATES=0 -DHAVESTDIO -DMODEL_HAS_DYNAMICALLY_LOADED_SFCNS=0 -DCLASSIC_INTERFACE=0 -DALLOCATIONFCN=0 -DTID01EQ=0 -DTERMFCN=1 -DONESTEPFCN=1 -DMAT_FILE=1 -DMULTI_INSTANCE_CODE=1 -DINTEGER_CODE=0 -DMT=1 -DARM_PROJECT -D_USE_TARGET_UDP_ -D_RUNONTARGETHARDWARE_BUILD_ -DSTACK_SIZE=64 -D__MW_TARGET_USE_HARDWARE_RESOURCES_H__ -DRT -DMAT_FILE_LOC=/home/pi -DMAX_MATFILE_NAME_LEN=64
+DEFINES_BUILD_ARGS = -DCLASSIC_INTERFACE=0 -DALLOCATIONFCN=0 -DTERMFCN=1 -DONESTEPFCN=1 -DMAT_FILE=1 -DMULTI_INSTANCE_CODE=1 -DINTEGER_CODE=0 -DMT=1
 DEFINES_IMPLIED = -DTID01EQ=0
 DEFINES_SKIPFORSIL = -DARM_PROJECT -D_USE_TARGET_UDP_ -D_RUNONTARGETHARDWARE_BUILD_ -DSTACK_SIZE=64 -DRT
 DEFINES_STANDARD = -DMODEL=Top6DOFModel -DNUMST=2 -DNCSTATES=0 -DHAVESTDIO -DMODEL_HAS_DYNAMICALLY_LOADED_SFCNS=0
@@ -212,22 +215,23 @@ DEFINES = $(DEFINES_) $(DEFINES_BUILD_ARGS) $(DEFINES_IMPLIED) $(DEFINES_SKIPFOR
 ## SOURCE FILES
 ###########################################################################
 
-SRCS = $(START_DIR)/Top6DOFModel_ert_rtw/Top6DOFModel.c $(START_DIR)/Top6DOFModel_ert_rtw/Top6DOFModel_data.c $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2018b/toolbox/realtime/targets/raspi/server/MW_raspi_init.c $(MATLAB_ROOT)/toolbox/target/codertarget/rtos/src/linuxinitialize.c $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2018b/toolbox/target/shared/file_logging/src/ert_targets_logging.c $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2018b/toolbox/target/supportpackages/raspberrypi/src/raspi_file_logging.c
+SRCS = $(START_DIR)/Top6DOFModel_ert_rtw/Top6DOFModel.cpp $(START_DIR)/Top6DOFModel_ert_rtw/Top6DOFModel_data.cpp $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2018b/toolbox/realtime/targets/raspi/server/MW_raspi_init.c $(MATLAB_ROOT)/toolbox/target/codertarget/rtos/src/linuxinitialize.cpp $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2018b/toolbox/target/shared/file_logging/src/ert_targets_logging.c $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2018b/toolbox/target/supportpackages/raspberrypi/src/raspi_file_logging.c
 
 SERIAL_SRC  = $(SERIAL_DIR)/serial_init.c $(SERIAL_DIR)/arduino-serial-lib.c $(SERIAL_DIR)/arduino-serial.c
 PHIDGET_SRC = $(PHIDGET_DIR)/PhidgetHelperFunctions.c $(PHIDGET_DIR)/AccelerometerInit.c $(PHIDGET_DIR)/MagnetometerInit.c $(PHIDGET_DIR)/DistanceInit.c
+IMAGE_SRC = $(IMAGE_DIR)/captureImage.cpp $(IMAGE_DIR/initCamera.cpp
+VICON_SRC = $(VICON_DIR)/initializeUDP.cpp $(VICON_DIR)/getUDPData.cpp
+MAIN_SRC = $(START_DIR)/Top6DOFModel_ert_rtw/ert_main.cpp
 
-MAIN_SRC = $(START_DIR)/Top6DOFModel_ert_rtw/ert_main.c
-
-ALL_SRCS = $(SRCS) $(SERIAL_SRC) $(PHIDGET_SRC) $(MAIN_SRC)
+ALL_SRCS = $(SRCS) $(SERIAL_SRC) $(PHIDGET_SRC) $(IMAGE_SRC) $(VICON_SRC) $(MAIN_SRC)
 
 ###########################################################################
 ## OBJECTS
 ###########################################################################
 
-OBJS = serial_init.c.o arduino-serial-lib.c.o arduino-serial.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o Top6DOFModel.c.o Top6DOFModel_data.c.o MW_raspi_init.c.o linuxinitialize.c.o ert_targets_logging.c.o raspi_file_logging.c.o
+OBJS = initializeUDP.cpp.o getUDPData.cpp.o captureImage.cpp.o initCamera.cpp.o serial_init.c.o arduino-serial-lib.c.o arduino-serial.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o Top6DOFModel.cpp.o Top6DOFModel_data.cpp.o MW_raspi_init.c.o linuxinitialize.cpp.o ert_targets_logging.c.o raspi_file_logging.c.o
 
-MAIN_OBJ = ert_main.c.o
+MAIN_OBJ = ert_main.cpp.o
 
 ALL_OBJS = $(OBJS) $(MAIN_OBJ)
 
@@ -241,7 +245,7 @@ PREBUILT_OBJS =
 ## LIBRARIES
 ###########################################################################
 
-MODELREF_LIBS = ../slprj/ert/ApproachControl/ApproachControl_rtwlib.lib ../slprj/ert/AttitudeDynamics/AttitudeDynamics_rtwlib.lib ../slprj/ert/PIDControl/PIDControl_rtwlib.lib ../slprj/ert/ReactionWheel0/ReactionWheel0_rtwlib.lib ../slprj/ert/ThrusterModel0/ThrusterModel0_rtwlib.lib ../slprj/ert/TranslationalDynamics/TranslationalDynamics_rtwlib.lib ../slprj/ert/UseHWSensorData/UseHWSensorData_rtwlib.lib
+MODELREF_LIBS = ../slprj/ert/ApproachControl/ApproachControl_rtwlib.lib ../slprj/ert/AttitudeDynamics/AttitudeDynamics_rtwlib.lib ../slprj/ert/PIDControl/PIDControl_rtwlib.lib ../slprj/ert/ReactionWheel0/ReactionWheel0_rtwlib.lib ../slprj/ert/SlidingModeControl/SlidingModeControl_rtwlib.lib ../slprj/ert/ThrusterModel0/ThrusterModel0_rtwlib.lib ../slprj/ert/TranslationalDynamics/TranslationalDynamics_rtwlib.lib ../slprj/ert/UseHWSensorData/UseHWSensorData_rtwlib.lib
 
 LIBS = $(SHARED_LIB)
 
@@ -249,7 +253,7 @@ LIBS = $(SHARED_LIB)
 ## SYSTEM LIBRARIES
 ###########################################################################
 
-SYSTEM_LIBS = -lphidget22
+SYSTEM_LIBS = -lopencv_core -lopencv_imgproc -lopencv_videoio -lphidget22
 
 ###########################################################################
 ## ADDITIONAL TOOLCHAIN FLAGS
@@ -259,7 +263,7 @@ SYSTEM_LIBS = -lphidget22
 # C Compiler
 #---------------
 
-CFLAGS_SKIPFORSIL =  
+CFLAGS_SKIPFORSIL =   -fpermissive
 CFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
 CFLAGS += $(CFLAGS_SKIPFORSIL) $(CFLAGS_BASIC)
@@ -268,7 +272,7 @@ CFLAGS += $(CFLAGS_SKIPFORSIL) $(CFLAGS_BASIC)
 # C++ Compiler
 #-----------------
 
-CPPFLAGS_SKIPFORSIL =  
+CPPFLAGS_SKIPFORSIL =   -fpermissive
 CPPFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
 CPPFLAGS += $(CPPFLAGS_SKIPFORSIL) $(CPPFLAGS_BASIC)
@@ -362,7 +366,7 @@ execute : download
 
 $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS) $(MODELREF_LIBS) $(LIBS) $(MAIN_OBJ)
 	echo "### Creating standalone executable "$(PRODUCT)" ..."
-	$(LD) $(LDFLAGS) -o $(PRODUCT) $(OBJS) $(MAIN_OBJ) ../slprj/ert/ApproachControl/ApproachControl_rtwlib.lib ../slprj/ert/AttitudeDynamics/AttitudeDynamics_rtwlib.lib ../slprj/ert/PIDControl/PIDControl_rtwlib.lib ../slprj/ert/ReactionWheel0/ReactionWheel0_rtwlib.lib ../slprj/ert/ThrusterModel0/ThrusterModel0_rtwlib.lib ../slprj/ert/TranslationalDynamics/TranslationalDynamics_rtwlib.lib ../slprj/ert/UseHWSensorData/UseHWSensorData_rtwlib.lib $(LIBS) $(SYSTEM_LIBS) $(TOOLCHAIN_LIBS)
+	$(CPP_LD) $(CPP_LDFLAGS) -o $(PRODUCT) $(OBJS) $(MAIN_OBJ) ../slprj/ert/ApproachControl/ApproachControl_rtwlib.lib ../slprj/ert/AttitudeDynamics/AttitudeDynamics_rtwlib.lib ../slprj/ert/PIDControl/PIDControl_rtwlib.lib ../slprj/ert/ReactionWheel0/ReactionWheel0_rtwlib.lib ../slprj/ert/SlidingModeControl/SlidingModeControl_rtwlib.lib ../slprj/ert/ThrusterModel0/ThrusterModel0_rtwlib.lib ../slprj/ert/TranslationalDynamics/TranslationalDynamics_rtwlib.lib ../slprj/ert/UseHWSensorData/UseHWSensorData_rtwlib.lib $(LIBS) $(SYSTEM_LIBS) $(TOOLCHAIN_LIBS)
 	echo "### Created: $(PRODUCT)"
 
 
@@ -446,6 +450,18 @@ $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS) $(MODELREF_LIBS) $(LIBS) $(MAIN_OBJ)
 	$(CPP) $(CPPFLAGS) -o $@ $<
 
 
+captureImage.cpp.o : $(IMAGE_DIR)/captureImage.cpp
+	$(CPP) $(CPPFLAGS) -o $@ $<
+
+initCamera.cpp.o : $(IMAGE_DIR)/initCamera.cpp
+	$(CPP) $(CPPFLAGS) -o $@ $<
+
+initializeUDP.cpp.o : $(VICON_DIR)/initializeUDP.cpp
+	$(CPP) $(CPPFLAGS) -o $@ $<
+
+getUDPData.cpp.o : $(VICON_DIR)/getUDPData.cpp
+	$(CPP) $(CPPFLAGS) -o $@ $<
+
 serial_init.c.o : $(SERIAL_DIR)/serial_init.c
 	$(CC) $(CFLAGS) -o $@ $<
 
@@ -471,8 +487,8 @@ MW_raspi_init.c.o : $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R20
 	$(CC) $(CFLAGS) -o $@ $<
 
 
-linuxinitialize.c.o : $(MATLAB_ROOT)/toolbox/target/codertarget/rtos/src/linuxinitialize.c
-	$(CC) $(CFLAGS) -o $@ $<
+linuxinitialize.cpp.o : $(MATLAB_ROOT)/toolbox/target/codertarget/rtos/src/linuxinitialize.cpp
+	$(CPP) $(CPPFLAGS) -o $@ $<
 
 
 ert_targets_logging.c.o : $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2018b/toolbox/target/shared/file_logging/src/ert_targets_logging.c
@@ -483,9 +499,9 @@ raspi_file_logging.c.o : $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackage
 	$(CC) $(CFLAGS) -o $@ $<
 
 
-$(SHARED_BIN_DIR)/%.c.o : $(SHARED_SRC_DIR)/%.c
+$(SHARED_BIN_DIR)/%.cpp.o : $(SHARED_SRC_DIR)/%.cpp
 	echo "### Compiling $< ..."
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CPP) $(CPPFLAGS) -o $@ $<
 
 
 #---------------------------

@@ -47,7 +47,8 @@ rangeArray = zeros(4,4);
 % Extract required state data
 R_Sys_ECEF     = state.TranState_ECEF.R_Sys_ECEF;
 Q_ECEF_To_Body = state.RotState_Body_ECEF.ECEF_To_Body_Quat;
-Q_Body_To_ECEF = quatconj(Q_ECEF_To_Body');
+% Q_Body_To_ECEF = quatconj(Q_ECEF_To_Body');
+Q_Body_To_ECEF = Q_ECEF_To_Body';
 
 sensorAngMinBody = zeros(4,1);
 sensorAngMaxBody = zeros(4,1);

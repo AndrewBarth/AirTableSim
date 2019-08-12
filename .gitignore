@@ -6,3 +6,5 @@ __pycache*
 *Compass_Calibration*
 *.elf
 *.autosave
+mongoose
+*mexw64

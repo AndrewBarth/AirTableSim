@@ -53,7 +53,7 @@ epsilonC = SMGains(9);
 error = state - refValues;
 controlError = error;
 
-M_ECEF_To_Body = EulerToDCM_321(state(4:6));
+M_ECEF_To_Body = EulerToDCM_321(state(4:6))';
 ePosBody = M_ECEF_To_Body*error(1:3);
 eVelBody = M_ECEF_To_Body*error(7:9);
 
