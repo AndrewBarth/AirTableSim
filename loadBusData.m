@@ -1,8 +1,10 @@
-dynamicsRate = 0.005;
+% dynamicsRate = 0.0125;
+% controlRate = 0.025;
+dynamicsRate = 0.0125;
 controlRate = 0.025;
 load('ConfigSet_RPi_DynamicsRate.mat');
 load('ConfigSet_RPi_ControlRate.mat');
-% 8 3/8 inch
+
 addpath('utilities','-begin');
 
 controlType = 1;   % 1 sliding mode, 2 PID

@@ -1,0 +1,6 @@
+LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+export SERIAL_DIR=/home/pi/arduino-serial-master
+export PHIDGET_DIR=/home/pi/Phidget
+export IMAGE_DIR=/home/pi/imageCapture
+export VICON_DIR=/home/pi/Vicon
+export MATLAB_WORKSPACE=/home/pi/MATLAB_ws/R2018b

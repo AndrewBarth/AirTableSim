@@ -1,6 +1,7 @@
 
 function [theta,BW,x,quality] = imageProcess(myImage,range,rangeTable)
 
+    Dist = range;
     img = im2double(myImage);
 % 
 %     imR = squeeze(img(:,:,1));
@@ -21,6 +22,8 @@ function [theta,BW,x,quality] = imageProcess(myImage,range,rangeTable)
     BW = bwmorph(BW,'spur',Inf);
     BW = bwmorph(BW, 'clean', Inf); %Changed
     
+%     Length=-67.828*Dist^3+390.13*Dist^2-777.23*Dist+623.71;
+    Length=-67.828*Dist^3+390.13*Dist^2-777.23*Dist+620.0;
     
     AxisLength = regionprops(BW, 'MinorAxisLength', 'MajorAxisLength');
     
@@ -31,11 +34,12 @@ function [theta,BW,x,quality] = imageProcess(myImage,range,rangeTable)
     
     if ~isempty(AxisLength)
         for i=1:length(AxisLength)
-            if (AxisLength(i).('MajorAxisLength') >= 60) && (AxisLength(i).('MajorAxisLength') <= 150)
+           if (AxisLength(i).('MajorAxisLength') >= Length) && (AxisLength(i).('MajorAxisLength') <= (Length+10))
                 x = AxisLength(i).('MinorAxisLength');
                 y = AxisLength(i).('MajorAxisLength');
                 diff = x/y;
-                theta = -11723.69172*diff^3+30710.37033*diff^2-26860.97276*diff+7874.05175;
+                theta = -212244.05252*diff^5+870839.52192*diff^4-1423270.72883*diff^3+1157901.45123*diff^2-468883.28852*diff+75654.61750;
+                
                 quality = 1;
             end
         end

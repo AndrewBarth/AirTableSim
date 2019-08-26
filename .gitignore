@@ -8,3 +8,6 @@ __pycache*
 *.autosave
 mongoose
 *mexw64
+*.gz
+*.tgz
+*.bz2

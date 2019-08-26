@@ -1,7 +1,7 @@
 function [estAng]  = estimateAttitude(thetaAng,targetVec,cameraVec)
 % Estimate the current position based on sensed range data
 % 
-% Inputs: thetAng            theta angle from image sensor 1x1
+% Inputs: thetaAng           theta angle from image sensor 1x1
 %         targetVec          vector from target in ECEF frame nx3     
 %         cameraVec          vector from camera in Body frame 1x3
 %
@@ -30,4 +30,4 @@ cameraAngle = acos(dot(cameraVec,[1 0 0]));
 % The platform attitude angle is the sum of the target angle 
 % and the angle to the camera
 
-estAng = targetAngle + cameraAngle;
+estAng = thetaAng + targetAngle + cameraAngle;

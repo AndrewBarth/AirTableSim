@@ -6,6 +6,7 @@ nThruster = 8;
 nominalThrust = 0.65;   % N
 % nominalThrust = 0.15;   % N
 
+% thrusterData.minOnTime = 0.05;
 thrusterData.minOnTime = 0.05;
 
 % C1 = combnk(1:nThruster,1);

@@ -31,13 +31,14 @@ refPos  = refTraj(end,2:4);
 refVel  = refTraj(end,8:10);
 refAtt  = refTraj(end,5:7);
 refRate = refTraj(end,11:13);
+useApp = refTraj(end,14);
 
 posErr = norm(refPos - pos);
 velErr = norm(refVel - vel);
 attErr = norm(refAtt - att);
 rateErr = norm(refRate - rate);
 
-if posErr < zeroPos && velErr < zeroVel && attErr < zeroAtt && rateErr < zeroRate
+if posErr < zeroPos && velErr < zeroVel && attErr < zeroAtt && rateErr < zeroRate && useApp > 0
     outControlMode = 2;
 %     outControlMode = inControlMode;
 else

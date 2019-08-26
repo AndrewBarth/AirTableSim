@@ -50,6 +50,7 @@ function [outputForce,outputMoment,thrusterOn,thrusterOnTimes,onPulseWidth] = th
     % Thruster Data
 %     nThruster     = thrusterData.nThruster;
     nThruster = 8;
+%     timeStep = 0.025;
     timeStep = 0.025;
     
     % Zero the output for this time step
