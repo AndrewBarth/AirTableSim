@@ -1,5 +1,5 @@
 
-function [outputForce,outputMoment,thrusterOnTimes,optCOG] = thrusterModel2(time,controlForce,controlMoment,thrusterData)
+function [outputForce,outputMoment,thrusterOn,thrusterOnTimes,optCOG] = thrusterModel2(time,controlForce,controlMoment,thrusterData)
 
 % Function to model a set of thrusters
 % 
@@ -41,7 +41,7 @@ function [outputForce,outputMoment,thrusterOnTimes,optCOG] = thrusterModel2(time
     % Thruster Data
 %    nThruster     = thrusterData.nThruster;
     nThruster = 8;
-    minOnTime     = 0.025;   % ms
+    minOnTime = thrusterData.minOnTime;   % ms
     timeStep = 0.025;
     
     % Zero the ontimes for this time step

@@ -3,12 +3,13 @@
 
 nThruster = 8;
 % nominalThrust = 1.0;   % N
-nominalThrust = 0.65;   % N
+% nominalThrust = 0.65;   % N
+nominalThrust = 0.65;   % N  trial
 % nominalThrust = 0.15;   % N
 
-% thrusterData.minOnTime = 0.05;
+thrusterData.minOnTime = 0.1;
 thrusterData.minOnTime = 0.05;
-
+% thrusterData.minOnTime = 0.025;
 % C1 = combnk(1:nThruster,1);
 % C2 = combnk(1:nThruster,2);
 % C3 = combnk(1:nThruster,3);

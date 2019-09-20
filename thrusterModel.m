@@ -127,18 +127,18 @@ function [outputForce,outputMoment,thrusterOn,thrusterOnTimes,onPulseWidth] = th
         if thrusterOn(i)
             outputForce  = outputForce + thrusterData.thrusterForce(i,:)';
             outputMoment = outputMoment + thrusterData.thrusterMoment(i,:)';
-            onPulseWidth(i) = onPulseWidth(i) + timeStep;
-        else
-            if onPulseWidth(i) > eps && onPulseWidth(i) < (thrusterData.minOnTime-eps)
-                % Hold the thruster on for anohter cycle
-                onPulseWidth(i) = onPulseWidth(i) + timeStep;
-                outputForce  = outputForce + thrusterData.thrusterForce(i,:)';
-                outputMoment = outputMoment + thrusterData.thrusterMoment(i,:)';
-                thrusterOnTimes(i) = timeStep;
-                thrusterOn(i) = uint8(1);
-            else
-                onPulseWidth(i) = 0.0;
-            end
+%             onPulseWidth(i) = onPulseWidth(i) + timeStep;
+%         else
+%             if onPulseWidth(i) > eps && onPulseWidth(i) < (thrusterData.minOnTime-eps)
+%                 % Hold the thruster on for anohter cycle
+%                 onPulseWidth(i) = onPulseWidth(i) + timeStep;
+%                 outputForce  = outputForce + thrusterData.thrusterForce(i,:)';
+%                 outputMoment = outputMoment + thrusterData.thrusterMoment(i,:)';
+%                 thrusterOnTimes(i) = timeStep;
+%                 thrusterOn(i) = uint8(1);
+%             else
+%                 onPulseWidth(i) = 0.0;
+%             end
         end
     end
 

@@ -15,6 +15,87 @@ clear data
 % data5=load('ThrusterTest_5__stitched.mat');
 % data6=load('ThrusterTest_6__stitched.mat');
 
+data1=load('testUDP_2_1.mat');
+data2=load('testUDP_2_1.mat');
+data3=load('testUDP_3_1.mat');
+data4=load('testUDP_4_1.mat');
+data5=load('testUDP_5_1.mat');
+data6=load('testUDP_6_1.mat');
+
+in2m = 0.0254;
+g2mpss = 9.81;
+d2r = pi/180;
+% mass = [11.4]; 
+mass = [18.0];
+
+% Dimensions of sled
+width = 18*in2m;
+depth = 18*in2m;
+height = 6.5*in2m;
+
+% Inertia of solid cube
+Izz = 1/12 * mass * (width^2 + depth^2);
+
+% ignore the first second of data
+beginTime = 1;
+startTime = 5;
+endTime = 7;
+
+clear filtAccel filtRate iAccel eAccel iRate eRate dAccel dRate
+for i=1:6
+    newVar = strcat('data',int2str(i));
+    data = eval(newVar);
+    filtAccel = squeeze(data.rt_yout.signals(2).values(1,1:3,:));
+    filtRate  = squeeze(data.rt_yout.signals(2).values(1,4:6,:));
+    
+    sPt = find(data.rt_tout>startTime,1);
+    ePt = find(data.rt_tout>endTime,1);
+    bPt = find(data1.rt_tout>beginTime,1);
+    
+    basePt = (sPt - bPt)/2;
+    duration = endTime-startTime;
+    offset = 0.2;
+    
+    newsPt = find(data.rt_tout>(startTime+duration*offset),1);
+    newePt = find(data.rt_tout>(endTime-duration*offset),1);
+    deltaTime = data.rt_tout(newePt) - data.rt_tout(newsPt);
+    
+    if i == 1 || i == 2
+        iAccel(i) = mean(filtAccel(1,bPt:basePt));
+        eAccel(i) = mean(filtAccel(1,newsPt:newePt));
+        dAccel(i) = eAccel(i) - iAccel(i);
+        thrust(i) = dAccel(i)*mass;
+    elseif i == 3 || i == 4
+        iAccel(i) = mean(filtAccel(2,bPt:basePt));
+        eAccel(i) = mean(filtAccel(2,newsPt:newePt));
+        dAccel(i) = eAccel(i) - iAccel(i);
+        thrust(i) = dAccel(i)*mass;
+    elseif i == 5 || i == 6
+        iRate(i) = mean(filtRate(3,bPt:basePt));
+        eRate(i) = mean(filtRate(3,newsPt:newePt));
+        dRate(i) = eRate(i) - iRate(i);
+        angAccel(i) = dRate(i)/deltaTime;
+        moment(i) = Izz*angAccel(i);
+        force(i) = moment(i)/(width/2);
+    end
+    
+    
+    
+    
+    
+end
+return
+
+
+
+
+
+
+
+
+ 
+
+
 npts = 2000;
 iAccel(1) = mean(data1.rt_yout.signals(2).values(1:npts/2,1));
 iAccel(2) = mean(data2.rt_yout.signals(2).values(1:npts/2,1));
@@ -34,18 +115,7 @@ dAccel = tAccel-iAccel;
 dRate = fRate-iRate;
 
 
-in2m = 0.0254;
-g2mpss = 9.81;
-d2r = pi/180;
-m = [11.4]; 
 
-% Dimensions of sled
-width = 18*in2m;
-depth = 18*in2m;
-height = 6.5*in2m;
-
-% Inertia of solid cube
-Izz = 1/12 * m * (width^2 + depth^2);
 
 thrust = dAccel*g2mpss*m;
 angAccel = dRate*d2r/1;

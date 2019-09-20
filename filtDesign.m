@@ -16,8 +16,12 @@
 % signal = squeeze(unFilteredAccel.Data(2,1,:));
 
 time = data1.rt_tout;
-signal = data1.rt_yout.signals(2).values(:,1);
+% signal = data1.rt_yout.signals(2).values(:,1);
 % signal = data5.rt_yout.signals(2).values(:,6);
+% signal = squeeze(data1.rt_yout.signals(2).values(1,16,:));
+
+time = simout.Time(100:end);
+signal = simout.Data(100:end,2);
 
 npts = length(time);
 Fs = round(1/((time(end)-time(1))/npts));  % Hz
@@ -36,10 +40,12 @@ freq = Fs*(0:(npts/2))/npts;
 
 % plot the amplitude spectrum
 figure;plot(freq,p1)
+title('Spectrum')
 
 % fc = 1.0;
 % fc = 0.2;
 fc = 10;
+fc = .5;
 [b,a] = butter(2,fc/(Fs/2));
 % [b,a] = butter(2,[.01 .2]/(Fs/2));
 fsignal = filter(b,a,signal);
@@ -50,7 +56,7 @@ plot(time,signal); hold all;
 plot(time,fsignal);
 plot(time,fsignal1);
 title('The filtered signal');
-legend('Signal','Filtered Signal');
+legend('Signal','Filtered Signal','Filtered Signal 2');
 
 figure;
 plot(time,fsignal);hold all
