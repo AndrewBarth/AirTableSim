@@ -40,11 +40,12 @@ dtr = pi/180;
 
 PopulationLB = [zeros(1,7)];
 if controlType == 1
-    PopulationLB = [zeros(1,9)];
-    PopulationUB = [10*ones(1,6) 5 5 5];
+    PopulationLB = [10*zeros(1,6) 1 1 1];
+    PopulationUB = [10*ones(1,6) 15 15 15];
 else
     PopulationLB = [zeros(1,9)];
-    PopulationUB = [1000 1000 100 1000 1000 100 1000 1000 100];
+%     PopulationUB = [1000 1000 100 1000 1000 100 1000 1000 100];
+    PopulationUB = [200  200  50  200  200  50  200  200  50];
 end
 
 % Set up initial values
@@ -59,10 +60,15 @@ if controlType == 1
 %     epsilonB = 1.0;
 %     epsilonC = 1.0;
 %     X0 = [a b c gammaA gammaB gammaC epsilonA epsilonB epsilonC];
-    X0 = [4.6046    0.4443    7.5049    2.0947    2.2831    6.9779    1.9049 1.9049 1.9049];
+%     X0 = [4.6046    0.4443    7.5049    2.0947    2.2831    6.9779    1.9049 1.9049 1.9049];
+%     X0 = [1 1 1  1 1 1  1 1 1];
+    X0 = [2 2 12  2 2 1  1 1 10];
 else
-    xKp = [500 500 20];
-    xKd = [500 500 8];
+%     xKp = [500 500 20];
+%     xKd = [500 500 8];
+%     xKi = [0 0 0];
+    xKp = [50.0  50.0  10.0000];
+    xKd = [130.0 130.0 5.0000];
     xKi = [0 0 0];
     X0 = [xKp xKd xKi];
 end

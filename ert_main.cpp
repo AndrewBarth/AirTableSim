@@ -29,8 +29,14 @@ extern "C" {
 #include "arduino-serial-lib.h"
 }
 #include <phidget22.h>
+#include "DataStreamClient.h"
 #include "opencv2/opencv.hpp"
 #include "opencv2/videoio.hpp"
+#include <thread>
+#include <future>
+#include <mutex>
+#include <vector>
+
 #define UNUSED(x)                      x = x
 #define QUOTE1(name)                   #name
 #define QUOTE(name)                    QUOTE1(name)              // need to expand name 
@@ -70,17 +76,28 @@ pthread_t subRateThread[1];
 int subratePriority[1];
 
 using namespace cv;
+using namespace std;
+using namespace ViconDataStreamSDK::CPP;
+
+int useCamera = 0;
+int usePhidget = 1;
+int useVicon = 1;
+int useSerial = 1;
 
 /* Function Prototypes for Arduino comm and Phidget comm */
 extern "C" int serial_init();
-PhidgetAccelerometerHandle AccelerometerInit();
-PhidgetGyroscopeHandle GyroscopeInit();
-PhidgetMagnetometerHandle MagnetometerInit();
-int DistanceInit(PhidgetDistanceSensorHandle dch[] );
+extern "C" PhidgetAccelerometerHandle AccelerometerInit();
+extern "C" PhidgetGyroscopeHandle GyroscopeInit();
+extern "C" PhidgetMagnetometerHandle MagnetometerInit();
+extern "C" int DistanceInit(PhidgetDistanceSensorHandle dch[] );
 int getImage(cv::VideoCapture *cap,unsigned char imageOut[]);
 int initCamera(cv::VideoCapture *cap);
-int initializeUDP(int *handle);
-int getUDPData(int handle, char *packet_data);
+//int initializeUDP(int *handle);
+//int getUDPData(int handle, char *packet_data);
+int getDataStream(ViconDataStreamSDK::CPP::Client *MyClient, double translation[3], double rotation[3]);
+int initializeDataStream(ViconDataStreamSDK::CPP::Client *MyClient, std::string HostName);
+//double imageProc(unsigned int range[4], unsigned char imageOut[307200]);
+//void thFun(std::promise<double> & prms, int timeTic);
 
 /* Variables for Arduino comm and Phidget comm */
 PhidgetAccelerometerHandle ach;
@@ -93,14 +110,24 @@ int serial_fd;
 double acceleration[3];
 double angularRate[3];
 double magField[3];
-unsigned int distance[4];
+unsigned int range[4];
 int handle = 0;
-char packet_data[1024];
-double tx;
-double ty;
-double rz;
+//char packet_data[256];
+//double tx;
+//double ty;
+//double rz;
+unsigned int refIdx;
+ViconDataStreamSDK::CPP::Client MyClient;
+double translation[3];
+double rotation[3];
 
 cv::VideoCapture cap;
+int firstPass = 1;
+double estTheta = 0;
+std::future<double> ans;
+
+std::string HostName = "192.168.1.17:801";
+
 
 void *subrateTask(void *arg)
 {
@@ -136,62 +163,116 @@ void *baseRateTask(void *arg)
 {
   int timeTic;
   char theMessage[8];
-  //unsigned char imageOut[921600];
   unsigned char imageOut[307200];
   //FILE *fid=fopen("testGyro.txt","w");
+//std::promise<double> prms;
+//std::future<double> ftr = prms.get_future();
+//std::thread th(&thFun, std::ref(prms), 0);
+//th.detach();
 
   runModel = (rtmGetErrorStatus(Top6DOFModel_Obj.getRTM()) == (NULL));
   while (runModel) {
-//    timeTic = (int) (Top6DOFModel_Obj.Top6DOFModel_B.DigitalClock*1000);
+    sem_wait(&baserateTaskSem);
     timeTic = (int)(rtmGetT(Top6DOFModel_Obj.getRTM())*1000);
-    // Process Sensor inputs
+
+
+   if (~usePhidget) {
+      range[0] = 1900;
+   }
+   // Process Sensor inputs
+//   if (firstPass == 1) {
+//      firstPass = 0;
+//      ans = std::async(std::launch::async, imageProc, range, imageOut);
+//   }
+//   if (ans.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+//       printf("**********************************\n");
+//       estTheta = ans.get();
+//       ans = std::async(std::launch::async, imageProc, range, imageOut);
+//   }
+//   if (ftr.valid()) {
+//   if (ftr.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+//      printf("Future Ready \n");
+//      double testval = ftr.get();
+//      printf("test val is: %7.3f\n",testval);
+//      prms = std::promise<double>();
+//      ftr = std::future<double>();
+//      std::promise<double> prms;
+//      std::future<double> ftr = prms.get_future();
+//      ftr = prms.get_future();
+//      std::thread th(&thFun, std::ref(prms), timeTic);
+//   }
+//   }
     if ( (timeTic % 25) == 0) {
 
        // Camera Data
-       rc = getImage(&cap,imageOut);
-    //   printf("The image: %d\n",imageOut[52]);
-       //memcpy(Top6DOFModel_Obj.Top6DOFModel_U.ImageData,imageOut,921600*sizeof(char));
-       memcpy(Top6DOFModel_Obj.Top6DOFModel_U.ImageData,imageOut,307200*sizeof(char));
-       Top6DOFModel_Obj.Top6DOFModel_U.NewImage = 1;
+       if (useCamera) {
+          rc = getImage(&cap,imageOut);
+       }
+       //memcpy(Top6DOFModel_Obj.Top6DOFModel_U.ImageData,imageOut,307200*sizeof(char));
+       Top6DOFModel_Obj.Top6DOFModel_U.estTheta = estTheta;
+       Top6DOFModel_Obj.Top6DOFModel_U.thetaQuality = 1;
+
+       //printf("The estTheta output is: %7.3f\n\n",estTheta);
+       //printf("The image output is: %c\n\n",imageOut[52]);
+
+       //FILE *imgfid=fopen("myImage.bin","wb");
+       //fwrite(imageOut,sizeof(char),sizeof(imageOut),imgfid);
+       //fclose(imgfid);
 
        // Vision Tracker Data
-       rc = getUDPData(handle, packet_data);
+       if (useVicon) {
+          //rc = getUDPData(handle, packet_data);
+          rc = getDataStream(&MyClient,translation,rotation);
+       }
+
        //printf("name %c%c%c%c%c%c%c%c\n",packet_data[8],packet_data[9],packet_data[10],packet_data[11],packet_data[12],packet_data[13],packet_data[14],packet_data[15]);
-       memcpy(&tx,&packet_data[32],8*sizeof(char));
-       memcpy(&ty,&packet_data[40],8*sizeof(char));
-       memcpy(&rz,&packet_data[72],8*sizeof(char));
-       Top6DOFModel_Obj.Top6DOFModel_U.PositionData[0] = tx;
-       Top6DOFModel_Obj.Top6DOFModel_U.PositionData[1] = ty;
+       //if (rc >= 0) {
+       //   memcpy(&tx,&packet_data[32],8*sizeof(char));
+       //   memcpy(&ty,&packet_data[40],8*sizeof(char));
+       //   memcpy(&rz,&packet_data[72],8*sizeof(char));
+       //}
+       //Top6DOFModel_Obj.Top6DOFModel_U.PositionData[0] = tx;
+       //Top6DOFModel_Obj.Top6DOFModel_U.PositionData[1] = ty;
+       //Top6DOFModel_Obj.Top6DOFModel_U.PositionData[2] = 0.0;
+       //Top6DOFModel_Obj.Top6DOFModel_U.RotationData[0] = 0.0;
+       //Top6DOFModel_Obj.Top6DOFModel_U.RotationData[1] = 0.0;
+       //Top6DOFModel_Obj.Top6DOFModel_U.RotationData[2] = rz*57.2957;
+       //printf("Location: %10.3f,  %10.3f\n",tx,ty);
+       //printf("Rotation: %10.3f\n",rz*57.2957);
+       Top6DOFModel_Obj.Top6DOFModel_U.PositionData[0] = translation[0];
+       Top6DOFModel_Obj.Top6DOFModel_U.PositionData[1] = translation[1];
        Top6DOFModel_Obj.Top6DOFModel_U.PositionData[2] = 0.0;
        Top6DOFModel_Obj.Top6DOFModel_U.RotationData[0] = 0.0;
        Top6DOFModel_Obj.Top6DOFModel_U.RotationData[1] = 0.0;
-       Top6DOFModel_Obj.Top6DOFModel_U.RotationData[2] = rz;
-       printf("Location: %10.3f\nty %10.3f\n",tx,ty);
-       printf("Rotation: %10.3f\n",rz*57.2957);
+       Top6DOFModel_Obj.Top6DOFModel_U.RotationData[2] = rotation[2]*57.2957;
+       //printf("Global Translation: %7.3f, %7.3f, %7.3f\n",translation[0],translation[1],translation[2]);
+       //printf("Global Rotation: %7.3f, %7.3f, %7.3f\n",rotation[0]*57.2958,rotation[1]*57.2958,rotation[2]*57.2958);
+
+      // Reference trajectory
+      Top6DOFModel_Obj.Top6DOFModel_U.refIdx = refIdx;
 
       // IMU and Range Data
        prc = PhidgetAccelerometer_getAcceleration(ach, &acceleration);
        prc = PhidgetGyroscope_getAngularRate(gch, &angularRate);
-       prc = PhidgetMagnetometer_getMagneticField(mch, &magField);
+       //prc = PhidgetMagnetometer_getMagneticField(mch, &magField);
        for (int j=0; j<4; j++) {
-          prc = PhidgetDistanceSensor_getDistance(dch[j], &distance[j]);
+          prc = PhidgetDistanceSensor_getDistance(dch[j], &range[j]);
        }
        for (int k=0; k<3; k++) {
           Top6DOFModel_Obj.Top6DOFModel_U.GyroData[k] = angularRate[k];
           Top6DOFModel_Obj.Top6DOFModel_U.AccelerometerData[k] = acceleration[k];
           Top6DOFModel_Obj.Top6DOFModel_U.MagFieldData[k] = magField[k];
-          Top6DOFModel_Obj.Top6DOFModel_U.RangeData[k] = distance[k];
+          Top6DOFModel_Obj.Top6DOFModel_U.RangeData[k] = range[k];
        }
-       Top6DOFModel_Obj.Top6DOFModel_U.RangeData[3] = distance[3];
+       Top6DOFModel_Obj.Top6DOFModel_U.RangeData[3] = range[3];
     //   printf("Acceleration: %8.3f%8.3f%8.3f\n",acceleration[0],acceleration[1],acceleration[2]);
     //   printf("Angular Rate: %8.3f%8.3f%8.3f\n",angularRate[0],angularRate[1],angularRate[2]);
     //   printf("Magnetic Field: %8.3f%8.3f%8.3f\n",magField[0],magField[1],magField[2]);
-    //   printf("Distance: %6d %6d %6d %6d\n",distance[0],distance[1],distance[2],distance[3]);
+    //   printf("Distance: %6d %6d %6d %6d\n",range[0],range[1],range[2],range[3]);
     //   fprintf(fid,"%10d %8.3f%8.3f%8.3f%8.3f%8.3f%8.3f\n",timeTic,acceleration[0],acceleration[1],acceleration[2],angularRate[0],angularRate[1],angularRate[2]);
 
 
     } else {
-       Top6DOFModel_Obj.Top6DOFModel_U.NewImage = 0;
     }
 
 #ifdef MW_RTOS_DEBUG
@@ -209,24 +290,32 @@ void *baseRateTask(void *arg)
     Top6DOFModel_Obj.step0();
 
     if ( (timeTic % 25) == 0) {
-       //printf("Current Time: %6.3f\n",Top6DOFModel_Obj.Top6DOFModel_B.DigitalClock);
        printf("Current Time: %6.3f\n",rtmGetT(Top6DOFModel_Obj.getRTM()));
        for (int i=0; i<8; i++) {
            theMessage[i] = Top6DOFModel_Obj.Top6DOFModel_Y.thrusterCmds[i] + '0';
        }
-//       printf("The message: %c %c %c %c %c %c %c %c\n",theMessage[0],theMessage[1],theMessage[2],theMessage[3],theMessage[4],theMessage[5],theMessage[6],theMessage[7]);
-//       rc = serialport_write(serial_fd,theMessage);
+       //printf("The message: %c %c %c %c %c %c %c %c\n",theMessage[0],theMessage[1],theMessage[2],theMessage[3],theMessage[4],theMessage[5],theMessage[6],theMessage[7]);
 
-       printf("Theta Angle: %7.3f deg\n",Top6DOFModel_Obj.Top6DOFModel_Y.filteredSensorData[13]*57.2958);
+       if (useSerial) {
+          rc = serialport_write(serial_fd,theMessage);
+       }
+
+       //printf("Raw  Range: %7.3f\n",Top6DOFModel_Obj.Top6DOFModel_Y.rawSensorData[6]);
+       //printf("Filt Range: %7.3f\n",Top6DOFModel_Obj.Top6DOFModel_Y.filteredSensorData[6]);
+       //printf("Raw Theta:   %7.3f deg\n",Top6DOFModel_Obj.Top6DOFModel_Y.filteredSensorData[13]*57.2958);
+       //printf("Est Theta:   %7.3f deg\n",Top6DOFModel_Obj.Top6DOFModel_Y.estAng*57.2958);
+       //printf("Vicon Theta: %7.3f deg\n",rz*57.2958);
        //printf("Theta Qual: %6.2f \n",Top6DOFModel_Obj.Top6DOFModel_Y.sensorQuality[4]);
     }
 
     stopRequested = !((rtmGetErrorStatus(Top6DOFModel_Obj.getRTM()) == (NULL)));
     rt_StopDataLogging(MATFILE, Top6DOFModel_Obj.getRTM()->rtwLogInfo);
-    //if (Top6DOFModel_Obj.Top6DOFModel_B.DigitalClock > Top6DOFModel_Obj.Top6DOFModel_M->Timing.tFinal) {
+
     if (rtmGetT(Top6DOFModel_Obj.getRTM()) > rtmGetTFinal(Top6DOFModel_Obj.getRTM())) {
        //fclose(fid);
-       rc = serialport_write(serial_fd,"00000000");
+       if (useSerial) {
+          rc = serialport_write(serial_fd,"00000000");
+       }
        Sleep(1000);
        terminateTask(arg);
     }
@@ -260,7 +349,9 @@ void *terminateTask(void *arg)
 
     // Wait for all periodic tasks to complete
     for (i=0; i<1; i++) {
-      CHECK_STATUS(pthread_join(subRateThread[i],(void *)&threadJoinStatus), 0,
+      //CHECK_STATUS(pthread_join(subRateThread[i],(void *)&threadJoinStatus), 0,
+      //             "pthread_join");
+      CHECK_STATUS(pthread_join(subRateThread[i],(void **)&threadJoinStatus), 0,
                    "pthread_join");
     }
 
@@ -279,32 +370,60 @@ void *terminateTask(void *arg)
 
 int main(int argc, char **argv)
 {
-  UNUSED(argc);
-  UNUSED(argv);
+//  UNUSED(argc);
+//  UNUSED(argv);
   subratePriority[0] = 39;
   mwRaspiInit();
   rtmSetErrorStatus(Top6DOFModel_Obj.getRTM(), 0);
+
+  // Process Arguments
+  if (argc > 1) {
+     // Reference Trajectory
+     refIdx = atoi(argv[1]);
+  } else {
+     refIdx = 0;
+  }
 
   // Initialize model
   Top6DOFModel_Obj.initialize();
 
   // Open Serial Port
-  serial_fd = serial_init();
+  if (useSerial) {
+     serial_fd = serial_init();
+     rc = serialport_write(serial_fd,"00000000");
+  }
+
 
   // Open Phidget Channels
-//  ach = AccelerometerInit();
-//  gch = GyroscopeInit();
-//  mch = MagnetometerInit();
-//  int rc = DistanceInit(dch);
+  if (usePhidget) {
+     ach = AccelerometerInit();
+     gch = GyroscopeInit();
+     //mch = MagnetometerInit();
+     int rc = DistanceInit(dch);
+  }
 
   // Open camera
-  rc = initCamera(&cap);
+  if (useCamera) {
+     rc = initCamera(&cap);
+  }
    
   // Open UDP channel to Vicon data
-  rc = initializeUDP(&handle);
+  if (useVicon) {
+     rc = initializeDataStream(&MyClient, HostName);
+     //rc = initializeUDP(&handle);
+ 
+     //rc = -1;
+     //while(rc == -1) {
+     //   rc = getUDPData(handle, packet_data);
+     //   printf("Waiting for UDP data\n");
+     //}
+     //memcpy(&tx,&packet_data[32],8*sizeof(char));
+     //memcpy(&ty,&packet_data[40],8*sizeof(char));
+     //memcpy(&rz,&packet_data[72],8*sizeof(char));
+  }
 
   // Call RTOS Initialization function
-  myRTOSInit(0.005, 1);
+  myRTOSInit(0.0125, 1);
 
   // Wait for stop semaphore
   sem_wait(&stopSem);

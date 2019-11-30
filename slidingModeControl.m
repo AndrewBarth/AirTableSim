@@ -62,8 +62,10 @@ error(7:9) = eVelBody;
 posError = [ePosBody; error(4:6)];
 
 % Translational
-s1 = a*2*error(1) + error(7);
-s2 = b*2*error(2) + error(8);
+% s1 = a*2*error(1) + error(7);
+% s2 = b*2*error(2) + error(8);
+s1 = a*error(1) + error(7);
+s2 = b*error(2) + error(8);
 angular_rate = state(12);
 
 
@@ -80,12 +82,15 @@ else
     satS2 = sign(s2);
 end
 
-u1 = mass*(-a*4*error(7) - angular_rate*state(8) - gammaA*satS1);
-u2 = mass*(-b*4*error(8) + angular_rate*state(7) - gammaB*satS2);
+% u1 = mass*(-a*4*error(7) - angular_rate*state(8) - gammaA*satS1);
+% u2 = mass*(-b*4*error(8) + angular_rate*state(7) - gammaB*satS2);
+u1 = mass*(-a*error(7) - angular_rate*state(8) - gammaA*satS1);
+u2 = mass*(-b*error(8) + angular_rate*state(7) - gammaB*satS2);
 
 % Rotational
 % s3 = c*error(6) + error(12);
-s3 = c/4*error(6) + error(12);
+% s3 = c/4*error(6) + error(12);
+s3 = c*error(6) + error(12);
 ratio3 = abs(s3/epsilonC);
 if ratio3 <= 1
     satS3 = s3;
@@ -94,5 +99,7 @@ else
 end
 
 % u3 = inertia*(-4*c*error(12) - gammaC*satS3);
-u3 = inertia*(-12*c*error(12) - gammaC*satS3);
+% u3 = inertia*(-12*c*error(12) - gammaC*satS3);
+% u3 = inertia*(-4*c*error(12) - gammaC*satS3);
+u3 = inertia*(-c*error(12) - gammaC*satS3);
 controlSignal = [u1 u2 0 0 0 u3]';

@@ -47,7 +47,7 @@ function [outputForce,outputMoment,thrusterOn,thrusterOnTimes,optCOG] = thruster
     % Zero the ontimes for this time step
     ontime = zeros(3);
     ontimes = zeros(nThruster,1);
-
+    thrusterOn = zeros(nThruster,1);
     
     minImpulse = minOnTime*thrusterData.nominalThrust;
   

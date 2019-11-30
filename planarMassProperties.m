@@ -32,3 +32,7 @@ height = 6.5*in2m;
 
 % Inertia of solid cube
 Izz = 1/12 * m * (width^2 + depth^2);
+
+% Inertia scale factor
+inertiaSF = 0.63;   % Determined from 9/25/2019 thruster testing
+Izz = Izz*inertiaSF;

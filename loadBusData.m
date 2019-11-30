@@ -23,16 +23,24 @@ Kp = [50.0  50.0 0 0 0  10.0000];
 Kd = [130.0 130.0 0 0 0  5.0000];
 Ki = [0 0 0 0 0 0];
 
+Kp = [50.0000  155.9614  0   0 0 48.6550];
+Kd = [131.0000  130.0000 0   0 0  5.0000];
+Ki = [  1.0000    1.0000 0   0 0  0];
+
 % SMGains = [2 2 2 2 2 4 1];
 % SMGains = [1.6264    1.5585    4.8510    8.0133    1.6984    4.8066    1.2611];
-SMGains = [2.0801    3.0489    8.9333    4.9881    3.0029    9.5293    0.6944    2.9403    3.0662];
+% SMGains = [2.0801    3.0489    8.9333    4.9881    3.0029    9.5293    0.6944    2.9403    3.0662];
+SMGains = [3.5078    3.9888    6.3119/6    1.8214    4.7749    7.3059    3.6553    1.9774    4.3207];
+SMGains = [1 1 2 1 1 1 1 1 1];
+SMGains = [2 2 12 2 2 1 1 1 10];
+SMGains = [8.6506    4.1815    6.1690    9.8805    6.3439    0.1717    1.0000   13.0080   10.0000];
 
 %% Configure sensor setup
 VSS_SIMDYNAMICS = Simulink.Variant('VSS_MODE==0');
 VSS_HWSENSOR    = Simulink.Variant('VSS_MODE==1');
 VSS_SIMFILTERED = Simulink.Variant('VSS_MODE==2');
 VSS_SIMSENSOR   = Simulink.Variant('VSS_MODE==3');
-VSS_MODE = 1;
+VSS_MODE = 0;
 
 %% Control Output Bus
 clear elems;

@@ -49,7 +49,7 @@ function [outputForce,outputMoment,thrusterOn,thrusterOnTimes,onPulseWidth] = th
     
     % Thruster Data
 %     nThruster     = thrusterData.nThruster;
-    nThruster = 8;
+    nThruster     = 8;
 %     timeStep = 0.025;
     timeStep = 0.025;
     
@@ -57,9 +57,11 @@ function [outputForce,outputMoment,thrusterOn,thrusterOnTimes,onPulseWidth] = th
     outputForce  = [0 0 0]';
     outputMoment = [0 0 0]';
     thrusterOnTimes = zeros(nThruster,1);
+    thrusterOn = zeros(nThruster,1);
     
     cmdFM =[controlForce controlMoment];
-     
+    cmdImpulse = cmdFM*timeStep;
+    
     C = thrusterData.thrusterCombinations;
     
     % Compute the Force/Moment vectors and unit vectors for all

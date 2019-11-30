@@ -137,11 +137,11 @@ ASFLAGS              = -c \
 CFLAGS               = -c \
                        -MMD -MP -MF"$(@:%.o=%.dep)" -MT"$@"  \
                        -O2
-CPPFLAGS             = -c \
+CPPFLAGS             = -c -g \
                        -MMD -MP -MF"$(@:%.o=%.dep)" -MT"$@"  \
                        -std=c++11 \
                        -O2
-CPP_LDFLAGS          = -lrt -lpthread -ldl
+CPP_LDFLAGS          = -lrt -lpthread -ldl -L${VICON_DIR}/DataStreamSDK/bin/Debug/
 CPP_SHAREDLIB_LDFLAGS  = -shared  \
                          -lrt -lpthread -ldl
 DOWNLOAD_FLAGS       =
@@ -196,7 +196,7 @@ INCLUDES_OPENCV = -I/usr/local/include/opencv4
 INCLUDES_SERIAL = -I$(SERIAL_DIR)
 INCLUDES_PHIDGET = -I$(PHIDGET_DIR)
 INCLUDES_IMAGE = -I$(IMAGE_DIR)
-INCLUDES_VICON = -I$(VICON_DIR)
+INCLUDES_VICON = -I$(VICON_DIR) -I${VICON_DIR}/DataStreamSDK/Vicon/CrossMarket/DataStream/ViconDataStreamSDK_CPP/
 INCLUDES = $(INCLUDES_OPENCV) $(INCLUDES_SERIAL) $(INCLUDES_PHIDGET) $(INCLUDES_IMAGE) $(INCLUDES_VICON) $(INCLUDES_BUILDINFO)
 
 ###########################################################################
@@ -219,8 +219,8 @@ SRCS = $(START_DIR)/Top6DOFModel_ert_rtw/Top6DOFModel.cpp $(START_DIR)/Top6DOFMo
 
 SERIAL_SRC  = $(SERIAL_DIR)/serial_init.c $(SERIAL_DIR)/arduino-serial-lib.c $(SERIAL_DIR)/arduino-serial.c
 PHIDGET_SRC = $(PHIDGET_DIR)/PhidgetHelperFunctions.c $(PHIDGET_DIR)/AccelerometerInit.c $(PHIDGET_DIR)/MagnetometerInit.c $(PHIDGET_DIR)/DistanceInit.c
-IMAGE_SRC = $(IMAGE_DIR)/captureImage.cpp $(IMAGE_DIR/initCamera.cpp
-VICON_SRC = $(VICON_DIR)/initializeUDP.cpp $(VICON_DIR)/getUDPData.cpp
+IMAGE_SRC = $(IMAGE_DIR)/captureImage.cpp $(IMAGE_DIR/initCamera.cpp $(IMAGE_DIR)/imageProc.cpp $(IMAGE_DIR)/ImageProcessing.cpp
+VICON_SRC = $(VICON_DIR)/initializeDataStream.cpp $(VICON_DIR)/getDataStream.cpp
 MAIN_SRC = $(START_DIR)/Top6DOFModel_ert_rtw/ert_main.cpp
 
 ALL_SRCS = $(SRCS) $(SERIAL_SRC) $(PHIDGET_SRC) $(IMAGE_SRC) $(VICON_SRC) $(MAIN_SRC)
@@ -229,7 +229,7 @@ ALL_SRCS = $(SRCS) $(SERIAL_SRC) $(PHIDGET_SRC) $(IMAGE_SRC) $(VICON_SRC) $(MAIN
 ## OBJECTS
 ###########################################################################
 
-OBJS = initializeUDP.cpp.o getUDPData.cpp.o captureImage.cpp.o initCamera.cpp.o serial_init.c.o arduino-serial-lib.c.o arduino-serial.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o Top6DOFModel.cpp.o Top6DOFModel_data.cpp.o MW_raspi_init.c.o linuxinitialize.cpp.o ert_targets_logging.c.o raspi_file_logging.c.o
+OBJS = initializeDataStream.cpp.o getDataStream.cpp.o captureImage.cpp.o initCamera.cpp.o imageProc.cpp.o ImageProcessing.cpp.o serial_init.c.o arduino-serial-lib.c.o arduino-serial.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o Top6DOFModel.cpp.o Top6DOFModel_data.cpp.o MW_raspi_init.c.o linuxinitialize.cpp.o ert_targets_logging.c.o raspi_file_logging.c.o
 
 MAIN_OBJ = ert_main.cpp.o
 
@@ -253,7 +253,7 @@ LIBS = $(SHARED_LIB)
 ## SYSTEM LIBRARIES
 ###########################################################################
 
-SYSTEM_LIBS = -lopencv_core -lopencv_imgproc -lopencv_videoio -lphidget22
+SYSTEM_LIBS = -lopencv_core -lopencv_imgproc -lopencv_videoio -lphidget22 -lViconDataStreamSDK_CPP
 
 ###########################################################################
 ## ADDITIONAL TOOLCHAIN FLAGS
@@ -456,10 +456,16 @@ captureImage.cpp.o : $(IMAGE_DIR)/captureImage.cpp
 initCamera.cpp.o : $(IMAGE_DIR)/initCamera.cpp
 	$(CPP) $(CPPFLAGS) -o $@ $<
 
-initializeUDP.cpp.o : $(VICON_DIR)/initializeUDP.cpp
+imageProc.cpp.o : $(IMAGE_DIR)/imageProc.cpp
 	$(CPP) $(CPPFLAGS) -o $@ $<
 
-getUDPData.cpp.o : $(VICON_DIR)/getUDPData.cpp
+ImageProcessing.cpp.o : $(IMAGE_DIR)/ImageProcessing.cpp
+	$(CPP) $(CPPFLAGS) -o $@ $<
+
+initializeDataStream.cpp.o : $(VICON_DIR)/initializeDataStream.cpp
+	$(CPP) $(CPPFLAGS) -o $@ $<
+
+getDataStream.cpp.o : $(VICON_DIR)/getDataStream.cpp
 	$(CPP) $(CPPFLAGS) -o $@ $<
 
 serial_init.c.o : $(SERIAL_DIR)/serial_init.c

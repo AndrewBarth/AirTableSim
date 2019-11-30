@@ -1,7 +1,8 @@
 
 close all;
-% data1=load('Top6DOFModel_3_1.mat');
-data1=load('testUDP_10_1.mat');
+% data1=load('Top6DOFModel_1_1.mat');
+% data1=load('testUDP_1_1.mat');
+data1=load('ThrusterTest_1_1.mat');
 reference = 0;
 control = 0;
 
@@ -17,11 +18,11 @@ trackVel  = filtSens(21:23,:);
 rawPos    = rawSens(:,15:17);
 rawAng    = rawSens(:,18:20);
 
-% thrusterCmds = data1.rt_yout.signals(1).values;
-thrusterCmds = squeeze(data1.rt_yout.signals(1).values(1,:,:))';
+thrusterCmds = data1.rt_yout.signals(1).values;
+% thrusterCmds = squeeze(data1.rt_yout.signals(1).values(1,:,:))';
  
 if reference
-    refTraj = squeeze(data1.rt_yout.signals(7).values(1:6,:,1));
+    refTraj = squeeze(data1.rt_yout.signals(7).values(:,:,1));
 end
 if control
     controlError = data1.rt_yout.signals(8).values;
@@ -76,7 +77,7 @@ end
 figure;subplot(3,1,1);plot(data1.rt_tout,trackPos(1,:)); hold all;
 xlabel('Time (s)');ylabel('Position (m)');
 if reference
-    plot(refTraj(1:6,1),refTraj(1:6,2));
+    plot(refTraj(:,1),refTraj(:,2));
     legend('Tracked','Reference')
 else
     legend('Tracked')
@@ -85,7 +86,7 @@ title('Filtered Tracker X Position');
 subplot(3,1,2);plot(data1.rt_tout,trackPos(2,:)); hold all;
 xlabel('Time (s)');ylabel('Position (m)');
 if reference
-    plot(refTraj(1:6,1),refTraj(1:6,3));
+    plot(refTraj(:,1),refTraj(:,3));
     legend('Tracked','Reference')
 else
     legend('Tracked')
@@ -94,7 +95,7 @@ title('Filtered Tracker Y Position');
 subplot(3,1,3);plot(trackPos(1,:),trackPos(2,:)); hold all;
 xlabel('X Position (m)');ylabel('Y Position (m)')
 if reference 
-    plot(refTraj(1:6,2),refTraj(1:6,3));
+    plot(refTraj(:,2),refTraj(:,3));
     legend('Tracked','Reference')
 else
     legend('Tracked')
@@ -104,7 +105,7 @@ title('Tracker Trajectory')
 figure;plot(data1.rt_tout,trackAng(3,:)); hold all;
 xlabel('Time (s)');ylabel('Angle (deg)');
 if reference
-    plot(refTraj(1:6,2),refTraj(1:6,7)*180/pi);
+    plot(refTraj(:,1),refTraj(:,7)*180/pi);
     legend('Tracked','Reference')
 else
     legend('Tracked')

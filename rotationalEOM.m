@@ -4,7 +4,7 @@ function [dy] = rotationalEOM(t,y,Mext,Meff,Inertia)
 % This function is designed to be used with the ode45 function
 %
 % Inputs: t       current time step
-%         y       state vector (q qdot) 6x1  
+%         y       state vector (q qdot) 7x1  
 %         Mext    external moments 3x1
 %         Meff    effector moments 3x1
 %         Inertia inertia values 3x1
@@ -31,11 +31,12 @@ function [dy] = rotationalEOM(t,y,Mext,Meff,Inertia)
 % Modification History:
 %    May 14 2019 - Initial version
 %    May 23 2019 - Switched to quaternion integration
+%    Sep 29 2019 - Removed Euler angle input
 %
 
 % Parse state vector. 
-q    = y(1:3);   % [phi theta psi]
-qdot = y(4:6);   % [wx wy wz]
+q    = y(1:4);   % [phi theta psi]
+qdot = y(5:7);   % [wx wy wz]
 
 % Inertia Matrix
 J = [Inertia(1) 0 0; 0 Inertia(2) 0; 0 0 Inertia(3)];
@@ -49,9 +50,10 @@ end
 Mnet = Mext + Meff;
 
 % Get attitude quaternion
-quat = EulerToquat_321(q);
+% quat = EulerToquat_321(q);
+quat = q;
 qs = quat(1);
-qv = quat(2:4);
+qv = quat(2:4)';
 
 % Compute the quaternion derivative
 qsDot = -0.5*qdot'*qv';

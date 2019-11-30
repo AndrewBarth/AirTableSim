@@ -69,6 +69,7 @@ totalPulses = sum(nPulse);
 cost = totalPulses;
 
 % Check Final State
+% THIS STOPS BEFORE APPROACH CONTROL
 refPos = squeeze(refTraj.Data(5,2:4,end));
 % refPos = [1.5 2.75 0];
 refAng = squeeze(refTraj.Data(5,5:7,end));
@@ -76,7 +77,7 @@ refVel = squeeze(refTraj.Data(5,8:10,end));
 refRate = squeeze(refTraj.Data(5,11:13,end));
 ECEFpos = stateOutBus.TranState_ECEF.R_Sys_ECEF.Data(end,:);
 ECEFvel = stateOutBus.TranState_ECEF.V_Sys_ECEF.Data(end,:);
-EulerAngles = stateOutBus.RotState_Body_ECEF.Body_To_ECEF_Euler.Data(end,:);
+EulerAngles = stateOutBus.RotState_Body_ECEF.ECEF_To_Body_Euler.Data(end,:);
 BodyRates = stateOutBus.RotState_Body_ECEF.BodyRates_wrt_ECEF_In_Body.Data(end,:);
 posError = ECEFpos - refPos;
 angError = EulerAngles - refAng;
@@ -84,7 +85,7 @@ velError = ECEFvel - refVel;
 rateError = BodyRates - refRate;
 cost = cost + norm([posError(1) posError(2)])*1000;
 cost = cost + abs(angError(3))*1000;
-if abs(posError(1)) > 0.03 && abs(posError(2)) > 0.03
+if abs(posError(1)) > 0.03 || abs(posError(2)) > 0.03
     cost = cost + 1000;
 end
 if abs(angError(3)) > .01*pi/180
