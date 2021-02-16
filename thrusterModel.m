@@ -93,29 +93,30 @@ function [outputForce,outputMoment,thrusterOn,thrusterOnTimes,onPulseWidth] = th
     unitCmd = zeros(1,6);
     if norm(cmdFM) > eps
         unitCmd = cmdFM / norm(cmdFM);
-    end
+
     
-    % Determine which thruster combination is closest to the command
-    dist = zeros(size(unitF,1),1);
-    for i = 1:size(unitF,1)
-        dist(i) = norm(unitCmd - [unitF(i,:) unitM(i,:)]);
-    end
-    [delt idx] = min(dist);
-    
-    % The impulse for the current time step
-%     Fimpulse = F(idx,:)*timeStep;
-%     Mimpulse = M(idx,:)*timeStep;
-    Fimpulse = F(idx,:)*thrusterData.minOnTime;
-    Mimpulse = M(idx,:)*thrusterData.minOnTime;
-    cmdFimpulse = cmdFM(1:3)*timeStep;
-    cmdMimpulse = cmdFM(4:6)*timeStep;
-   
-    if norm(cmdFimpulse) >= norm(Fimpulse) || norm(cmdMimpulse) >= norm(Mimpulse)
-%         outputForce  = F(idx,:)';
-%         outputMoment = M(idx,:)';
-        for i=1:3
-            if C(idx,i) ~= 0
-                thrusterOnTimes(C(idx,i)) = timeStep;
+        % Determine which thruster combination is closest to the command
+        dist = zeros(size(unitF,1),1);
+        for i = 1:size(unitF,1)
+            dist(i) = norm(unitCmd - [unitF(i,:) unitM(i,:)]);
+        end
+        [delt idx] = min(dist);
+
+        % The impulse for the current time step
+    %     Fimpulse = F(idx,:)*timeStep;
+    %     Mimpulse = M(idx,:)*timeStep;
+        Fimpulse = F(idx,:)*thrusterData.minOnTime;
+        Mimpulse = M(idx,:)*thrusterData.minOnTime;
+        cmdFimpulse = cmdFM(1:3)*timeStep;
+        cmdMimpulse = cmdFM(4:6)*timeStep;
+
+        if norm(cmdFimpulse) >= norm(Fimpulse) || norm(cmdMimpulse) >= norm(Mimpulse)
+    %         outputForce  = F(idx,:)';
+    %         outputMoment = M(idx,:)';
+            for i=1:3
+                if C(idx,i) ~= 0
+                    thrusterOnTimes(C(idx,i)) = timeStep;
+                end
             end
         end
     end

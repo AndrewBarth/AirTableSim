@@ -13,7 +13,6 @@ function [dy] = translationalEOM(t,y,Fext,Feff,Mass,angularRates)
 % Output: dy  derivative for state array 6x1
 %
 % Assumptions and Limitations:
-%    Calculations performed about body-fixed principal axes
 %
 % Dependencies:
 %
@@ -48,8 +47,8 @@ Fnet = Fext + Feff;
 C = cross(angularRates,qdot);
 
 A = [ zeros(3,3) eye(3,3); zeros(3,3) zeros(3,3)];
-B = [zeros(3,1); (Minv*Fnet - C)];
-
+% B = [zeros(3,1); (Minv*Fnet - C)];
+B = [zeros(3,1); (Minv*Fnet)];
 D = A*[q; qdot];
 
 dy = B + D;

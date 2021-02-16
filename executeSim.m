@@ -70,11 +70,11 @@ cost = totalPulses;
 
 % Check Final State
 % THIS STOPS BEFORE APPROACH CONTROL
-refPos = squeeze(refTraj.Data(5,2:4,end));
+refPos = squeeze(refTraj.Data(7,2:4,end));
 % refPos = [1.5 2.75 0];
-refAng = squeeze(refTraj.Data(5,5:7,end));
-refVel = squeeze(refTraj.Data(5,8:10,end));
-refRate = squeeze(refTraj.Data(5,11:13,end));
+refAng = squeeze(refTraj.Data(7,5:7,end));
+refVel = squeeze(refTraj.Data(7,8:10,end));
+refRate = squeeze(refTraj.Data(7,11:13,end));
 ECEFpos = stateOutBus.TranState_ECEF.R_Sys_ECEF.Data(end,:);
 ECEFvel = stateOutBus.TranState_ECEF.V_Sys_ECEF.Data(end,:);
 EulerAngles = stateOutBus.RotState_Body_ECEF.ECEF_To_Body_Euler.Data(end,:);

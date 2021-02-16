@@ -84,9 +84,10 @@ end
 
 % u1 = mass*(-a*4*error(7) - angular_rate*state(8) - gammaA*satS1);
 % u2 = mass*(-b*4*error(8) + angular_rate*state(7) - gammaB*satS2);
-u1 = mass*(-a*error(7) - angular_rate*state(8) - gammaA*satS1);
-u2 = mass*(-b*error(8) + angular_rate*state(7) - gammaB*satS2);
-
+% u1 = mass*(-a*error(7) - angular_rate*state(8) - gammaA*satS1);
+% u2 = mass*(-b*error(8) + angular_rate*state(7) - gammaB*satS2);
+u1 = mass*(-a*error(7)  - gammaA*satS1);
+u2 = mass*(-b*error(8)  - gammaB*satS2);
 % Rotational
 % s3 = c*error(6) + error(12);
 % s3 = c/4*error(6) + error(12);

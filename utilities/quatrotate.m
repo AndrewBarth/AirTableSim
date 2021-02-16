@@ -36,9 +36,9 @@ qconj = quatconj(q);
 % p' = qpq?1
 % p' = p + 2w(v × p) + 2(v × (v × p))
 % 
-temp  = quatmult(q,qv);
-temp1 = quatmult(temp,qconj);
+% temp  = quatmult(q,qv);
+% temp1 = quatmult(temp,qconj);
 
-% temp = quatmult(qconj,qv);
-% temp1 = quatmult(temp,q);
+temp = quatmult(qconj,qv);
+temp1 = quatmult(temp,q);
 vout = temp1(2:4);

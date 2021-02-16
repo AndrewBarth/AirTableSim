@@ -46,6 +46,7 @@ title('Spectrum')
 % fc = 0.2;
 fc = 10;
 fc = .5;
+fc = 0.01;
 [b,a] = butter(2,fc/(Fs/2));
 % [b,a] = butter(2,[.01 .2]/(Fs/2));
 fsignal = filter(b,a,signal);

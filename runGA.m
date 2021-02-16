@@ -23,7 +23,7 @@ function [pop,fit,exitflag,output,population,scores] = runGA()
 %    May  6 2019 - Reduced number of variables
 %
 
-controlType = 1;
+controlType = 2;
 
 % Number of variables in the population
 if controlType == 1
@@ -77,9 +77,10 @@ end
 % options = gaoptimset('Generations',nGen,'PopulationSize',popSize,'StallGenLimit',50,'InitialPopulation',X0, ...
 %                      'Display','iter','PlotFcn',{@gaplotbestf,@gaplotrange,@gaplotdistance},'UseParallel', true);
 
-options = gaoptimset('Generations',nGen,'PopulationSize',popSize,'StallGenLimit',50,'InitialPopulation',X0, ...
-                     'Display','iter','PlotFcn',{@gaplotbestf,@gaplotrange,@gaplotdistance},'UseParallel', false);
-                 
+% options = gaoptimset('Generations',nGen,'PopulationSize',popSize,'StallGenLimit',50,'InitialPopulation',X0, ...
+%                      'Display','iter','PlotFcn',{@gaplotbestf,@gaplotrange,@gaplotdistance},'UseParallel', false);
+ options = gaoptimset('Generations',nGen,'PopulationSize',popSize,'StallGenLimit',50,'InitialPopulation',X0, ...
+                     'Display','iter','PlotFcn',{@gaplotbestf},'UseParallel', false);                
 % The fitness function will create a FLS and run the sim
 FitnessFcn = @(x) executeSim(x,controlType);
 

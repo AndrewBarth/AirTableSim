@@ -81,17 +81,17 @@ subplot(3,1,3);plot(controlMoment.Time,controlMoment.Data(:,6),thrusterOut.Time,
 title('Applied Moment Body: Z');xlabel('Time (s)');ylabel('Moment (Nm)')
 legend('Control','Effector')
 
-clear signs
-signs(1,:) = sign(controlMoment.Data(:,1).*thrusterOut.Data(:,1));
-signs(2,:) = sign(controlMoment.Data(:,2).*thrusterOut.Data(:,2));
-signs(6,:) = sign(controlMoment.Data(:,6).*thrusterOut.Data(:,6));
-figure;
-subplot(3,1,1);plot(controlMoment.Time,signs(1,:).*abs(controlMoment.Data(:,1)-thrusterOut.Data(:,1))')
-title('Delta Force Body: X');xlabel('Time (s)');ylabel('Force (N)')
-
-subplot(3,1,2);plot(controlMoment.Time,signs(2,:).*abs(controlMoment.Data(:,2)-thrusterOut.Data(:,2))')
-title('Delta Force Body: Y');xlabel('Time (s)');ylabel('Force (N)')
-
-subplot(3,1,3);plot(controlMoment.Time,signs(6,:).*abs(controlMoment.Data(:,6)-thrusterOut.Data(:,6))')
-title('Delta Moment Body: Z');xlabel('Time (s)');ylabel('Moment (Nm)')
+% clear signs
+% signs(1,:) = sign(controlMoment.Data(:,1).*thrusterOut.Data(:,1));
+% signs(2,:) = sign(controlMoment.Data(:,2).*thrusterOut.Data(:,2));
+% signs(6,:) = sign(controlMoment.Data(:,6).*thrusterOut.Data(:,6));
+% figure;
+% subplot(3,1,1);plot(controlMoment.Time,signs(1,:).*abs(controlMoment.Data(:,1)-thrusterOut.Data(:,1))')
+% title('Delta Force Body: X');xlabel('Time (s)');ylabel('Force (N)')
+% 
+% subplot(3,1,2);plot(controlMoment.Time,signs(2,:).*abs(controlMoment.Data(:,2)-thrusterOut.Data(:,2))')
+% title('Delta Force Body: Y');xlabel('Time (s)');ylabel('Force (N)')
+% 
+% subplot(3,1,3);plot(controlMoment.Time,signs(6,:).*abs(controlMoment.Data(:,6)-thrusterOut.Data(:,6))')
+% title('Delta Moment Body: Z');xlabel('Time (s)');ylabel('Moment (Nm)')
 

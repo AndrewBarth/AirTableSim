@@ -7,8 +7,8 @@ nThruster = 8;
 nominalThrust = 0.38;   % N  full pressure thrust from 9/25/2019 thruster test
 % nominalThrust = 0.15;   % N
 
-% thrusterData.minOnTime = 0.1;
 thrusterData.minOnTime = 0.05;
+% thrusterData.minOnTime = 0.05;
 % thrusterData.minOnTime = 0.025;
 C1 = combnk(1:nThruster,1);
 C2 = combnk(1:nThruster,2);
