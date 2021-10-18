@@ -14,20 +14,23 @@
 
 clear data
 
-data1=load('ThrusterTest_1__stitched.mat');
-data2=load('ThrusterTest_2__stitched.mat');
-data3=load('ThrusterTest_3__stitched.mat');
-data4=load('ThrusterTest_4__stitched.mat');
-data5=load('ThrusterTest_5__stitched.mat');
-data6=load('ThrusterTest_6__stitched.mat');
-data7=load('ThrusterTest_7__stitched.mat');
-data8=load('ThrusterTest_8__stitched.mat');
-data9=load('ThrusterTest_9__stitched.mat');
-data10=load('ThrusterTest_10__stitched.mat');
-data11=load('ThrusterTest_11__stitched.mat');
-data12=load('ThrusterTest_12__stitched.mat');
+% data1=load('ThrusterTest_1__stitched.mat');
+% data2=load('ThrusterTest_2__stitched.mat');
+% data3=load('ThrusterTest_3__stitched.mat');
+% data4=load('ThrusterTest_4__stitched.mat');
+% data5=load('ThrusterTest_5__stitched.mat');
+% data6=load('ThrusterTest_6__stitched.mat');
+% data7=load('ThrusterTest_7__stitched.mat');
+% data8=load('ThrusterTest_8__stitched.mat');
+% data9=load('ThrusterTest_9__stitched.mat');
+% data10=load('ThrusterTest_10__stitched.mat');
+% data11=load('ThrusterTest_11__stitched.mat');
+% data12=load('ThrusterTest_12__stitched.mat');
 
-nCase = 12;
+data1=load('ThrusterTest_new_1__stitched.mat');
+
+% nCase = 12;
+nCase = 1;
 % Define type of test (1: X trans, 2: Y trans, 3: rot)
 type = [1 1 2 2 3 3 1 1 2 2 3 3];
 
@@ -112,10 +115,10 @@ for i=1:nCase
     
     figure;
     subplot(2,1,1);plot(data.rt_tout,filtAccel(1,:))
-    xlabel('Time (sec)');ylabel('Accel (m/s)');
+    xlabel('Time (sec)');ylabel('Accel (m/s2)');
     title(['X Linear Acceleration, Case: ' num2str(i)])
     subplot(2,1,2);plot(data.rt_tout,filtAccel(2,:))
-    xlabel('Time (sec)');ylabel('Accel (m/s)');
+    xlabel('Time (sec)');ylabel('Accel (m/s2)');
     title(['Y Linear Acceleration, Case: ' num2str(i)])  
     
     figure;
