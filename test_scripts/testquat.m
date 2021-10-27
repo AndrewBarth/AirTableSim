@@ -1,4 +1,4 @@
-
+% A script to test quat utilities
 euler = [ 0 0 30*pi/180];
 
 q0 = cos(euler(3)/2)*cos(euler(2)/2)*cos(euler(1)/2) + sin(euler(3)/2)*sin(euler(2)/2)*sin(euler(1)/2);

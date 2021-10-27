@@ -1,4 +1,4 @@
-
+% script to test the image processing function
 
 clear; close all; clc;
 

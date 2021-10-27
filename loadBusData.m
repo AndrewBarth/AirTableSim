@@ -75,10 +75,6 @@ accelNoisePow = [.0000001 .0000001 .0000001]/10;    % Want 2e-2 m/s2
 
 
 %% Configure sensor setup
-VSS_SIMDYNAMICS = Simulink.Variant('VSS_MODE==0');
-VSS_HWSENSOR    = Simulink.Variant('VSS_MODE==1');
-VSS_SIMSENSOR   = Simulink.Variant('VSS_MODE==2');
-VSS_MODE = 1;
 
 % Configure Navigation type
 navType = 4;    % 1: True State 2: Measured State 3: Filtered State 4: Estimated State

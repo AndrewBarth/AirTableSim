@@ -1,4 +1,6 @@
 
+% This was a test of the IMU placed on a spinning chair. Rotation times
+% were manually recorded based on looking at a video from the test
 
 % Test 1
 clear videoTimes offsetTime timeVec nRot rotTime rotRate
@@ -10,7 +12,7 @@ for i = 1:nRot
 end
 offsetTime = videoTimes(1) - 0.45;
 timeVec = videoTimes - offsetTime;
-test1 = load('test1.csv','-ascii');
+test1 = load('gyroTest1.csv','-ascii');
 figure;plot(test1(:,1)./1000,test1(:,2:4));legend('x','y','z');title('Acceleration Test 1')
 figure;plot(test1(:,1)./1000,test1(:,5:7));legend('x','y','z');title('Rate Test 1'); hold all
 plot(timeVec,[rotRate(1) rotRate]);
@@ -25,7 +27,7 @@ for i = 1:nRot
 end
 offsetTime = videoTimes(1) - 0.4;
 timeVec = videoTimes - offsetTime;
-test2 = load('test2.csv','-ascii');
+test2 = load('gyroTest2.csv','-ascii');
 figure;plot(test2(:,1)./1000,test2(:,2:4));legend('x','y','z');title('Acceleration Test 2')
 figure;plot(test2(:,1)./1000,test2(:,5:7));legend('x','y','z');title('Rate Test 2'); hold all
 plot(timeVec,[rotRate(1) rotRate]);
@@ -41,7 +43,7 @@ for i = 1:nRot
 end
 offsetTime = videoTimes(1) - 0.55;
 timeVec = videoTimes - offsetTime;
-test3 = load('test3.csv','-ascii');
+test3 = load('gyroTest3.csv','-ascii');
 figure;plot(test3(:,1)./1000,test3(:,2:4));legend('x','y','z');title('Acceleration Test 3')
 figure;plot(test3(:,1)./1000,test3(:,5:7));legend('x','y','z');title('Rate Test 3'); hold all
 plot(timeVec,[rotRate(1) rotRate]);
@@ -56,7 +58,7 @@ for i = 1:nRot
 end
 offsetTime = videoTimes(1) - 0.45;
 timeVec = videoTimes - offsetTime;
-test4 = load('test4.csv','-ascii');
+test4 = load('gyroTest4.csv','-ascii');
 figure;plot(test4(:,1)./1000,test4(:,2:4));legend('x','y','z');title('Acceleration Test 4')
 figure;plot(test4(:,1)./1000,test4(:,5:7));legend('x','y','z');title('Rate Test 4'); hold all
 plot(timeVec,[rotRate(1) rotRate]);

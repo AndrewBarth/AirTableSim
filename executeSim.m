@@ -1,14 +1,8 @@
 function [cost] = executeSim(x,controlType)
 % This function is intended to run within a call to the ga function
 % 
-% Inputs: x           the array of values for the MF scale factors. x is
-%                     an individual in the ga 1x56
-%         maxSpeed    maximum value for speed MF
-%         maxRoom     maximum size of the room
-%         maxGoal     maximum distance you could be from the goal
-%         moBotData   structure with robot, rod, and room info
-%         controlFlag indicates type of control requested
-%         ICidx       IC case to run
+% Inputs: x           the array of values to be optimized f
+%         controlType indicates type of control requested
 %
 % Output: cost        cost value for each set of runs
 %
@@ -20,8 +14,6 @@ function [cost] = executeSim(x,controlType)
 %
 % Modification History:
 %    Apr 20 2019 - Initial version
-%    May  6 2019 - Reduced number of membership functions 
-%    May  9 2019 - Run a set of ICs on each pass through this function
 %
 
 cost = 0;

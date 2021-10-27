@@ -86,5 +86,3 @@ FitnessFcn = @(x) executeSim(x,controlType);
 
 % Call the GA
 [pop,fit,exitflag,output,population,scores] = ga(FitnessFcn,nvar,[],[],[],[],PopulationLB,PopulationUB,[],[],options);
-
-

@@ -1,4 +1,4 @@
-
+% Trying to test the COG thruster selection
 time = 1;
 timeStep = 0.025;
 

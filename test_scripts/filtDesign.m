@@ -1,3 +1,5 @@
+% Script used to examine filter settings and types
+
 
 % time   = sensedRate.Time;
 % signal = squeeze(sensedRate.Data(1,1,:));

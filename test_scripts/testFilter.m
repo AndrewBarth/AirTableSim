@@ -1,4 +1,6 @@
 
+% Test potential filter settings
+
 % Clear persistent states
 clear imuFilter
 clear eml_IIR_Filter
