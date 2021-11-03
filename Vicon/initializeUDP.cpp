@@ -18,7 +18,7 @@ int initializeUDP(int *handle) {
        perror("socket");
        return(-1);
     } else {
-      //printf("test\n");
+      //printf("socket\n");
     }
 
     struct sockaddr_in servaddr;

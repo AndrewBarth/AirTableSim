@@ -1,14 +1,15 @@
 //
-// Classroom License -- for classroom instructional use only.  Not for
-// government, commercial, academic research, or other organizational use.
+// Academic License - for use in teaching, academic research, and meeting
+// course requirements at degree granting institutions only.  Not for
+// government, commercial, or other organizational use.
 //
 // File: ert_main.cpp
 //
-// Code generated for Simulink model 'Top6DOFModel'.
+// Code generated for Simulink model 'AirTableModel'.
 //
-// Model version                  : 1.798
-// Simulink Coder version         : 9.0 (R2018b) 24-May-2018
-// C/C++ source code generated on : Fri Jul 26 08:36:13 2019
+// Model version                  : 6.3
+// Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
+// C/C++ source code generated on : Fri Oct 29 13:15:35 2021
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -17,13 +18,14 @@
 //
 #include <stdio.h>
 #include <stdlib.h>
-#include "Top6DOFModel.h"
-#include "Top6DOFModel_private.h"
+#include "AirTableModel.h"
+#include "AirTableModel_private.h"
 #include "rtwtypes.h"
 #include "limits.h"
 #include "rt_nonfinite.h"
 #include "rt_logging.h"
 #include "MW_raspi_init.h"
+#include "MW_Pyserver_control.h"
 #include "linuxinitialize.h"
 extern "C" {
 #include "arduino-serial-lib.h"
@@ -37,15 +39,16 @@ extern "C" {
 #include <vector>
 
 #define UNUSED(x)                      x = x
+#ifndef SAVEFILE
+#define MATFILE2(file)                 #file ".mat"
+#define MATFILE1(file)                 MATFILE2(file)
+#define MATFILE                        MATFILE1(MODEL)
+#else
 #define QUOTE1(name)                   #name
 #define QUOTE(name)                    QUOTE1(name)              // need to expand name 
-#ifndef SAVEFILE
-# define MATFILE2(file)                #file ".mat"
-# define MATFILE1(file)                MATFILE2(file)
-# define MATFILE                       MATFILE1(MODEL)
-#else
-# define MATFILE                       QUOTE(SAVEFILE)
+#define MATFILE                        QUOTE(SAVEFILE)
 #endif
+
 /* Determine if we are on Windows of Unix */
 #ifdef _WIN32
 #include <windows.h>
@@ -54,7 +57,9 @@ extern "C" {
 #define Sleep(x) usleep((x)*1000)
 #endif
 
-static Top6DOFModelModelClass Top6DOFModel_Obj;// Instance of model class
+static Top6DOFModelModelClass AirTableModel_Obj;// Instance of model class
+
+#define NAMELEN                        16
 
 // Function prototype declaration
 void exitFcn(int sig);
@@ -69,7 +74,7 @@ sem_t subrateTaskSem[1];
 int taskId[1];
 pthread_t schedulerThread;
 pthread_t baseRateThread;
-unsigned long threadJoinStatus[8];
+void *threadJoinStatus;
 int terminatingmodel = 0;
 pthread_t subRateThread[1];
 int subratePriority[1];
@@ -77,7 +82,7 @@ int subratePriority[1];
 using namespace cv;
 using namespace std;
 
-int useCamera = 0;
+int useCamera = 1;
 int usePhidget = 1;
 int useUDP = 1;
 int useSerial = 1;
@@ -119,7 +124,6 @@ int firstPass = 1;
 double estTheta = 0;
 std::future<double> ans;
 
-
 void *subrateTask(void *arg)
 {
   int tid = *((int *) arg);
@@ -138,7 +142,7 @@ void *subrateTask(void *arg)
 
     switch (subRateId) {
      case 1:
-      Top6DOFModel_Obj.step1();
+      AirTableModel_Obj.step1();
       break;
 
      default:
@@ -152,6 +156,7 @@ void *subrateTask(void *arg)
 
 void *baseRateTask(void *arg)
 {
+
   int timeTic;
   char theMessage[8];
   unsigned char imageOut[307200];
@@ -161,10 +166,11 @@ void *baseRateTask(void *arg)
 //std::thread th(&thFun, std::ref(prms), 0);
 //th.detach();
 
-  runModel = (rtmGetErrorStatus(Top6DOFModel_Obj.getRTM()) == (NULL));
+  runModel = (rtmGetErrorStatus(AirTableModel_Obj.getRTM()) == (NULL));
   while (runModel) {
     sem_wait(&baserateTaskSem);
-    timeTic = (int)(rtmGetT(Top6DOFModel_Obj.getRTM())*1000);
+
+    timeTic = (int)(rtmGetT(AirTableModel_Obj.getRTM())*1000);
 
 
    if (~usePhidget) {
@@ -193,15 +199,16 @@ void *baseRateTask(void *arg)
 //      std::thread th(&thFun, std::ref(prms), timeTic);
 //   }
 //   }
+
     if ( (timeTic % 25) == 0) {
 
        // Camera Data
        if (useCamera) {
           rc = getImage(&cap,imageOut);
        }
-       //memcpy(Top6DOFModel_Obj.Top6DOFModel_U.ImageData,imageOut,307200*sizeof(char));
-       Top6DOFModel_Obj.Top6DOFModel_U.estTheta = estTheta;
-       Top6DOFModel_Obj.Top6DOFModel_U.thetaQuality = 1;
+       //memcpy(AirTableModel_Obj.AirTableModel_U.ImageData,imageOut,307200*sizeof(char));
+       AirTableModel_Obj.AirTableModel_U.estTheta = estTheta;
+       AirTableModel_Obj.AirTableModel_U.thetaQuality = 1;
 
        //printf("The estTheta output is: %7.3f\n\n",estTheta);
        //printf("The image output is: %c\n\n",imageOut[52]);
@@ -221,17 +228,17 @@ void *baseRateTask(void *arg)
           memcpy(&ty,&packet_data[40],8*sizeof(char));
           memcpy(&rz,&packet_data[72],8*sizeof(char));
        }
-       Top6DOFModel_Obj.Top6DOFModel_U.PositionData[0] = tx;
-       Top6DOFModel_Obj.Top6DOFModel_U.PositionData[1] = ty;
-       Top6DOFModel_Obj.Top6DOFModel_U.PositionData[2] = 0.0;
-       Top6DOFModel_Obj.Top6DOFModel_U.RotationData[0] = 0.0;
-       Top6DOFModel_Obj.Top6DOFModel_U.RotationData[1] = 0.0;
-       Top6DOFModel_Obj.Top6DOFModel_U.RotationData[2] = rz*57.2957;
+       AirTableModel_Obj.AirTableModel_U.PositionData[0] = tx;
+       AirTableModel_Obj.AirTableModel_U.PositionData[1] = ty;
+       AirTableModel_Obj.AirTableModel_U.PositionData[2] = 0.0;
+       AirTableModel_Obj.AirTableModel_U.RotationData[0] = 0.0;
+       AirTableModel_Obj.AirTableModel_U.RotationData[1] = 0.0;
+       AirTableModel_Obj.AirTableModel_U.RotationData[2] = rz*57.2957;
        //printf("Location: %10.3f,  %10.3f\n",tx,ty);
        //printf("Rotation: %10.3f\n",rz*57.2957);
 
       // Reference trajectory
-      Top6DOFModel_Obj.Top6DOFModel_U.refIdx = refIdx;
+      AirTableModel_Obj.AirTableModel_U.refIdx = refIdx;
 
       // IMU and Range Data
        prc = PhidgetAccelerometer_getAcceleration(ach, &acceleration);
@@ -241,12 +248,12 @@ void *baseRateTask(void *arg)
           prc = PhidgetDistanceSensor_getDistance(dch[j], &range[j]);
        }
        for (int k=0; k<3; k++) {
-          Top6DOFModel_Obj.Top6DOFModel_U.GyroData[k] = angularRate[k];
-          Top6DOFModel_Obj.Top6DOFModel_U.AccelerometerData[k] = acceleration[k];
-          Top6DOFModel_Obj.Top6DOFModel_U.MagFieldData[k] = magField[k];
-          Top6DOFModel_Obj.Top6DOFModel_U.RangeData[k] = range[k];
+          AirTableModel_Obj.AirTableModel_U.GyroData[k] = angularRate[k];
+          AirTableModel_Obj.AirTableModel_U.AccelerometerData[k] = acceleration[k];
+          AirTableModel_Obj.AirTableModel_U.MagFieldData[k] = magField[k];
+          AirTableModel_Obj.AirTableModel_U.RangeData[k] = range[k];
        }
-       Top6DOFModel_Obj.Top6DOFModel_U.RangeData[3] = range[3];
+       AirTableModel_Obj.AirTableModel_U.RangeData[3] = range[3];
     //   printf("Acceleration: %8.3f%8.3f%8.3f\n",acceleration[0],acceleration[1],acceleration[2]);
     //   printf("Angular Rate: %8.3f%8.3f%8.3f\n",angularRate[0],angularRate[1],angularRate[2]);
     //   printf("Magnetic Field: %8.3f%8.3f%8.3f\n",magField[0],magField[1],magField[2]);
@@ -264,36 +271,38 @@ void *baseRateTask(void *arg)
 
 #endif
 
-    if (rtmStepTask(Top6DOFModel_Obj.getRTM(), 1)
+    if (rtmStepTask(AirTableModel_Obj.getRTM(), 1)
         ) {
       sem_post(&subrateTaskSem[0]);
     }
 
-    Top6DOFModel_Obj.step0();
+    AirTableModel_Obj.step();
+
 
     if ( (timeTic % 25) == 0) {
-       printf("Current Time: %6.3f\n",rtmGetT(Top6DOFModel_Obj.getRTM()));
+       printf("Current Time: %6.3f\n",rtmGetT(AirTableModel_Obj.getRTM()));
        for (int i=0; i<8; i++) {
-           theMessage[i] = Top6DOFModel_Obj.Top6DOFModel_Y.thrusterCmds[i] + '0';
+           theMessage[i] = AirTableModel_Obj.AirTableModel_Y.thrusterCmds[i] + '0';
        }
-       //printf("The message: %c %c %c %c %c %c %c %c\n",theMessage[0],theMessage[1],theMessage[2],theMessage[3],theMessage[4],theMessage[5],theMessage[6],theMessage[7]);
+       printf("The message: %c %c %c %c %c %c %c %c\n",theMessage[0],theMessage[1],theMessage[2],theMessage[3],theMessage[4],theMessage[5],theMessage[6],theMessage[7]);
 
        if (useSerial) {
           rc = serialport_write(serial_fd,theMessage);
+          printf("The failure: %d\n",serial_fd);
        }
 
-       //printf("Raw  Range: %7.3f\n",Top6DOFModel_Obj.Top6DOFModel_Y.rawSensorData[6]);
-       //printf("Filt Range: %7.3f\n",Top6DOFModel_Obj.Top6DOFModel_Y.filteredSensorData[6]);
-       //printf("Raw Theta:   %7.3f deg\n",Top6DOFModel_Obj.Top6DOFModel_Y.filteredSensorData[13]*57.2958);
-       //printf("Est Theta:   %7.3f deg\n",Top6DOFModel_Obj.Top6DOFModel_Y.estAng*57.2958);
+       //printf("Raw  Range: %7.3f\n",AirTableModel_Obj.AirTableModel_Y.rawSensorData[6]);
+       //printf("Filt Range: %7.3f\n",AirTableModel_Obj.AirTableModel_Y.filteredSensorData[6]);
+       //printf("Raw Theta:   %7.3f deg\n",AirTableModel_Obj.AirTableModel_Y.filteredSensorData[13]*57.2958);
+       //printf("Est Theta:   %7.3f deg\n",AirTableModel_Obj.AirTableModel_Y.estAng*57.2958);
        //printf("Vicon Theta: %7.3f deg\n",rz*57.2958);
-       //printf("Theta Qual: %6.2f \n",Top6DOFModel_Obj.Top6DOFModel_Y.sensorQuality[4]);
+       //printf("Theta Qual: %6.2f \n",AirTableModel_Obj.AirTableModel_Y.sensorQuality[4]);
     }
 
-    stopRequested = !((rtmGetErrorStatus(Top6DOFModel_Obj.getRTM()) == (NULL)));
-    rt_StopDataLogging(MATFILE, Top6DOFModel_Obj.getRTM()->rtwLogInfo);
+    stopRequested = !((rtmGetErrorStatus(AirTableModel_Obj.getRTM()) == (NULL)));
+    rt_StopDataLogging(MATFILE, AirTableModel_Obj.getRTM()->rtwLogInfo);
 
-    if (rtmGetT(Top6DOFModel_Obj.getRTM()) > rtmGetTFinal(Top6DOFModel_Obj.getRTM())) {
+    if (rtmGetT(AirTableModel_Obj.getRTM()) > rtmGetTFinal(AirTableModel_Obj.getRTM())) {
        //fclose(fid);
        if (useSerial) {
           rc = serialport_write(serial_fd,"00000000");
@@ -311,7 +320,7 @@ void *baseRateTask(void *arg)
 void exitFcn(int sig)
 {
   UNUSED(sig);
-  rtmSetErrorStatus(Top6DOFModel_Obj.getRTM(), "stopping the model");
+  rtmSetErrorStatus(AirTableModel_Obj.getRTM(), "stopping the model");
   runModel = 0;
 }
 
@@ -331,21 +340,20 @@ void *terminateTask(void *arg)
 
     // Wait for all periodic tasks to complete
     for (i=0; i<1; i++) {
-      //CHECK_STATUS(pthread_join(subRateThread[i],(void *)&threadJoinStatus), 0,
-      //             "pthread_join");
-      CHECK_STATUS(pthread_join(subRateThread[i],(void **)&threadJoinStatus), 0,
+      CHECK_STATUS(pthread_join(subRateThread[i], &threadJoinStatus), 0,
                    "pthread_join");
     }
 
     runModel = 0;
   }
 
+  MW_killPyserver();
   mwRaspiTerminate();
 
   // Disable rt_OneStep() here
 
   // Terminate model
-  Top6DOFModel_Obj.terminate();
+  AirTableModel_Obj.terminate();
   sem_post(&stopSem);
   return NULL;
 }
@@ -356,7 +364,8 @@ int main(int argc, char **argv)
 //  UNUSED(argv);
   subratePriority[0] = 39;
   mwRaspiInit();
-  rtmSetErrorStatus(Top6DOFModel_Obj.getRTM(), 0);
+  MW_launchPyserver();
+  rtmSetErrorStatus(AirTableModel_Obj.getRTM(), 0);
 
   // Process Arguments
   if (argc > 1) {
@@ -367,7 +376,7 @@ int main(int argc, char **argv)
   }
 
   // Initialize model
-  Top6DOFModel_Obj.initialize();
+  AirTableModel_Obj.initialize();
 
   // Open Serial Port
   if (useSerial) {
@@ -375,6 +384,19 @@ int main(int argc, char **argv)
      rc = serialport_write(serial_fd,"00000000");
   }
 
+  // Open UDP channel to Vicon data
+  if (useUDP) {
+     rc = initializeUDP(&handle);
+
+     rc = -1;
+     while(rc == -1) {
+        rc = getUDPData(handle, packet_data);
+        printf("Waiting for UDP data\n");
+     }
+     memcpy(&tx,&packet_data[32],8*sizeof(char));
+     memcpy(&ty,&packet_data[40],8*sizeof(char));
+     memcpy(&rz,&packet_data[72],8*sizeof(char));
+  }
 
   // Open Phidget Channels
   if (usePhidget) {
@@ -387,20 +409,6 @@ int main(int argc, char **argv)
   // Open camera
   if (useCamera) {
      rc = initCamera(&cap);
-  }
-   
-  // Open UDP channel to Vicon data
-  if (useUDP) {
-     rc = initializeUDP(&handle);
- 
-     rc = -1;
-     while(rc == -1) {
-        rc = getUDPData(handle, packet_data);
-        printf("Waiting for UDP data\n");
-     }
-     memcpy(&tx,&packet_data[32],8*sizeof(char));
-     memcpy(&ty,&packet_data[40],8*sizeof(char));
-     memcpy(&rz,&packet_data[72],8*sizeof(char));
   }
 
   // Call RTOS Initialization function

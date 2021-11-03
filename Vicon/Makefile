@@ -1,11 +1,12 @@
 
-INCLUDES = -I/home/pi/Vicon/ -I/home/pi/Vicon/Linux32/ -I/Linux32/ViconDataStreamSDKSourceLinux32-source/ -I/Linux32/ViconDataStreamSDKSourceLinux32-source/Vicon/CrossMarket/DataStream/ViconDataStreamSDK_CPP/
+INCLUDES = -I/home/pi/Vicon/ -I/home/pi/Vicon/DataStreamSDK/Vicon/CrossMarket/DataStream/ViconDataStreamSDK_CPP/ -I/home/pi/Vicon/DataStreamSDK/bin/Debug/
 
-SRC =  initializeUDP.cpp getUDPData.cpp driver.cpp
+SRC =  initializeUDP.cpp getUDPData.cpp initializeDataStream.cpp getDataStream.cpp driver.cpp
 
-OBJS =  initializeUDP.o getUDPData.o driver.o
+OBJS =  initializeUDP.o getUDPData.o initializeDataStream.o getDataStream.o driver.o
 
-LIBS =
+#LIBS = -lViconDataStreamSDK_CPP.so
+LIBS = -lViconDataStreamSDKCore -lViconCGStreamClientSDK -lViconCGStreamClient -lViconCGStream -lStreamCommon -lViconDataStreamSDK_CPP
 
 CC = gcc
 CFLAGS = -c $(INCLUDES) -g
@@ -14,7 +15,7 @@ CPP = g++
 CPPFLAGS = -c $(INCLUDES) -std=c++11 -g
 
 testVicon: $(OBJS) $(LIBS)
-	$(CPP) -g -lrt -lpthread -ldl -o testVicon $(OBJS) $(LIBS) 
+	$(CPP) -g -lrt -lpthread -ldl -L/home/pi/Vicon/DataStreamSDK/bin/Debug -o testVicon $(OBJS) $(LIBS) 
 
 
 %.o : %.c

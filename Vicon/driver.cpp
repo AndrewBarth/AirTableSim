@@ -1,5 +1,5 @@
 
-//#include "Linux32/DataStreamClient.h"
+#include "DataStreamClient.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,119 +10,65 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <iostream>
+#include <time.h>
+
+#ifdef WIN32
+  #include <conio.h>   // For _kbhit()
+  #include <cstdio>   // For getchar()
+  #include <windows.h> // For Sleep()
+#else
+  #include <unistd.h> // For sleep()
+#endif // WIN32
+
+using namespace ViconDataStreamSDK::CPP;
+#define output_stream if(!LogFile.empty()) ; else std::cout
 
 int initializeUDP(int *handle);
 int getUDPData(int handle, char *packet_data);
+int getDataStream(ViconDataStreamSDK::CPP::Client *MyClient, double translation[3], double rotation[3]);
+int initializeDataStream(ViconDataStreamSDK::CPP::Client *MyClient, std::string HostName);
 
-/*
-int initializeUDP(int *handle) {
-
-
-    *handle = socket( AF_INET, SOCK_DGRAM, 0 );
-    if(*handle < 0){
-       perror("socket");
-       return(-1);
-    } else {
-      printf("test\n");
-    }
-
-    struct sockaddr_in servaddr;
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_port=htons(51001);
-    servaddr.sin_addr.s_addr=htonl(INADDR_ANY);
-
-    if ( bind( *handle, (struct sockaddr*)&servaddr, sizeof(servaddr) ) < 0 ){
-	perror("bind");
-	return(-1);
-    }
-
-    return 0;
-}
-*/
-
-/*
-int getUDPData(int handle, char *packet_data) {
-
-                double tx;
-                double ty;
-                double rz;
-   struct sockaddr_in cliaddr;
-   socklen_t len= sizeof(cliaddr); 
-
-   //int received_bytes = recvfrom( handle, packet_data, sizeof(&packet_data),0, (struct sockaddr*)&cliaddr, &len );
-   int received_bytes = recvfrom( handle, packet_data, 1024,0, (struct sockaddr*)&cliaddr, &len );
-   if ( received_bytes > 0 ) {
-      printf("name %c%c%c%c%c%c%c%c\n",packet_data[8],packet_data[9],packet_data[10],packet_data[11],packet_data[12],packet_data[13],packet_data[14],packet_data[15]);
-           memcpy(&tx,&packet_data[32],8*sizeof(char));
-           memcpy(&ty,&packet_data[40],8*sizeof(char));
-           memcpy(&rz,&packet_data[72],8*sizeof(char));
-             printf("tx %10.3f\nty %10.3f\n",tx,ty);
-             printf("rz %10.3f\n",rz*57.2957);
-   }
-   return 0;
-}
-*/
-
-/*
-int NOTmain() {
-    int handle = socket( AF_INET, SOCK_DGRAM, 0 );
-
-    if(handle < 0){
-	perror("socket");
-	exit(1);
-    }
-	 
-    struct sockaddr_in servaddr;
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_port=htons(51001);
-    servaddr.sin_addr.s_addr=htonl(INADDR_ANY);
-
-    if ( bind( handle, (struct sockaddr*)&servaddr, sizeof(servaddr) ) < 0 ){
-	perror("bind");
-	exit(1);
-    }
-    while ( 1 )
-    {
-		struct sockaddr_in cliaddr;
-		char packet_data[1024];	
-                double tx;
-                double ty;
-                double rz;
-
-		socklen_t len= sizeof(cliaddr); 
-		int received_bytes = recvfrom( handle, packet_data, sizeof(packet_data),0, (struct sockaddr*)&cliaddr, &len );
-		if ( received_bytes > 0 )
-                printf("name %c%c%c%c%c%c%c%c\n",packet_data[8],packet_data[9],packet_data[10],packet_data[11],packet_data[12],packet_data[13],packet_data[14],packet_data[15]);
-           memcpy(&tx,&packet_data[32],8*sizeof(char));
-           memcpy(&ty,&packet_data[40],8*sizeof(char));
-           memcpy(&rz,&packet_data[72],8*sizeof(char));
-             printf("tx %10.3f\nty %10.3f\n",tx,ty);
-             printf("rz %10.3f\n",rz*57.2957);
-             printf("nItems: %d\n",packet_data[4]);
-    }
-     close(handle);
-     return 0; 
-}
-
-*/
-
-int main() {
    int rc;
    int handle = 0; 
-   char packet_data[1024];	
+   char packet_data[256];	
    double tx;
    double ty;
    double rz;
+   double translation[3];
+   double rotation[3];
+
+int main(int argc, char **argv) {
+
+//   std::string HostName = "192.168.1.17:801";
+   if( argc > 1 )
+   {
+//     HostName = argv[1];
+   }
+   // Make a new client
+//   ViconDataStreamSDK::CPP::Client MyClient;
+
+//   rc = initializeDataStream(&MyClient, HostName);
 
    rc = initializeUDP(&handle);
 
-   rc = getUDPData(handle, packet_data);
+   while(1) {
+   rc = -1;
+   while(rc == -1) {
+      rc = getUDPData(handle, packet_data);
+      printf("Waiting for UDP data\n");
+   }
+   printf("get return: %d\n",rc);
    printf("name %c%c%c%c%c%c%c%c\n",packet_data[8],packet_data[9],packet_data[10],packet_data[11],packet_data[12],packet_data[13],packet_data[14],packet_data[15]);
    memcpy(&tx,&packet_data[32],8*sizeof(char));
    memcpy(&ty,&packet_data[40],8*sizeof(char));
    memcpy(&rz,&packet_data[72],8*sizeof(char));
    printf("tx %10.3f\nty %10.3f\n",tx,ty);
    printf("rz %10.3f\n",rz*57.2957);
+
+//   rc = getDataStream(&MyClient,translation,rotation);
+//   printf("Global Translation: %7.3f, %7.3f, %7.3f\n",translation[0],translation[1],translation[2]);
+//   printf("Global Rotation: %7.3f, %7.3f, %7.3f\n",rotation[0]*57.2958,rotation[1]*57.2958,rotation[2]*57.2958);
+   }
 
    return 0;
 }
