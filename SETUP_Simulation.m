@@ -1,5 +1,7 @@
 
 
+addpath('plot_scripts')
+addpath('test_scripts')
 
 % Set the source of the sensor data
 VSS_SIMDYNAMICS = Simulink.Variant('VSS_MODE==0');
