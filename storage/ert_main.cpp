@@ -82,7 +82,7 @@ int subratePriority[1];
 using namespace cv;
 using namespace std;
 
-int useCamera = 1;
+int useCamera = 0;   // Camera routines are interfering with serial comm to Arduino
 int usePhidget = 1;
 int useUDP = 1;
 int useSerial = 1;
@@ -118,6 +118,8 @@ double tx;
 double ty;
 double rz;
 unsigned int refIdx;
+unsigned int navType;
+double endTime;
 
 cv::VideoCapture cap;
 int firstPass = 1;
@@ -240,6 +242,9 @@ void *baseRateTask(void *arg)
       // Reference trajectory
       AirTableModel_Obj.AirTableModel_U.refIdx = refIdx;
 
+      // Navigation type
+      AirTableModel_Obj.AirTableModel_U.navType = navType;
+
       // IMU and Range Data
        prc = PhidgetAccelerometer_getAcceleration(ach, &acceleration);
        prc = PhidgetGyroscope_getAngularRate(gch, &angularRate);
@@ -288,7 +293,9 @@ void *baseRateTask(void *arg)
 
        if (useSerial) {
           rc = serialport_write(serial_fd,theMessage);
-          printf("The failure: %d\n",serial_fd);
+          if (rc != 0) {
+             printf("Serial RC: %d\n",rc);
+          }
        }
 
        //printf("Raw  Range: %7.3f\n",AirTableModel_Obj.AirTableModel_Y.rawSensorData[6]);
@@ -368,15 +375,30 @@ int main(int argc, char **argv)
   rtmSetErrorStatus(AirTableModel_Obj.getRTM(), 0);
 
   // Process Arguments
+  printf("Number of Args: %d \n",argc);
   if (argc > 1) {
      // Reference Trajectory
      refIdx = atoi(argv[1]);
   } else {
-     refIdx = 0;
+     refIdx  = 0;
+  }
+  if (argc > 2) {
+     // Navigation Type
+     navType = atoi(argv[2]);
+  } else {
+     navType = 2;
+  }
+  if (argc > 3) {
+     endTime = atof(argv[3]);
+  } else {
+     endTime = 20.0;
   }
 
   // Initialize model
   AirTableModel_Obj.initialize();
+
+  // Set end time for model
+  rtmSetTFinal(AirTableModel_Obj.getRTM(),endTime);
 
   // Open Serial Port
   if (useSerial) {

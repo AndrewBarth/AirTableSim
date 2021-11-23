@@ -185,7 +185,8 @@ DEFINES = $(DEFINES_) $(DEFINES_BUILD_ARGS) $(DEFINES_CUSTOM) $(DEFINES_OPTS) $(
 SRCS = $(START_DIR)/AirTableModel_ert_rtw/AirTableModel.cpp $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_data.cpp $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/realtime/targets/raspi/src/MW_raspi_init.c $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/realtime/targets/raspi/src/periphs/MW_Pyserver_control.c $(MATLAB_ROOT)/toolbox/target/codertarget/rtos/src/linuxinitialize.cpp $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/shared/file_logging/src/ert_targets_logging.c $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/raspberrypi/src/raspi_file_logging.c
 
 SHARED_SRC= $(SHARED_SRC_DIR)/*.cpp
-SERIAL_SRC  = $(SERIAL_DIR)/serial_init.c $(SERIAL_DIR)/arduino-serial-lib.c $(SERIAL_DIR)/arduino-serial.c
+#SERIAL_SRC  = $(SERIAL_DIR)/serial_init.c $(SERIAL_DIR)/arduino-serial-lib.c $(SERIAL_DIR)/arduino-serial.c
+SERIAL_SRC  = $(SERIAL_DIR)/serial_init.c $(SERIAL_DIR)/arduino-serial-lib.c
 PHIDGET_SRC = $(PHIDGET_DIR)/PhidgetHelperFunctions.c $(PHIDGET_DIR)/AccelerometerInit.c $(PHIDGET_DIR)/MagnetometerInit.c $(PHIDGET_DIR)/DistanceInit.c
 IMAGE_SRC = $(IMAGE_DIR)/captureImage.cpp $(IMAGE_DIR/initCamera.cpp 
 #IMAGE_SRC = $(IMAGE_DIR)/captureImage.cpp $(IMAGE_DIR/initCamera.cpp $(IMAGE_DIR)/imageProc.cpp $(IMAGE_DIR)/ImageProcessing.cpp
@@ -199,7 +200,7 @@ ALL_SRCS = $(SRCS) $(SERIAL_SRC) $(PHIDGET_SRC) $(IMAGE_SRC) $(MAIN_SRC) ${SHARE
 ## OBJECTS
 ###########################################################################
 
-OBJS = captureImage.cpp.o initCamera.cpp.o initializeUDP.cpp.o getUDPData.cpp.o serial_init.c.o arduino-serial-lib.c.o arduino-serial.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o AirTableModel.cpp.o AirTableModel_data.cpp.o MW_raspi_init.c.o MW_Pyserver_control.c.o linuxinitialize.cpp.o ert_targets_logging.c.o raspi_file_logging.c.o
+OBJS = captureImage.cpp.o initCamera.cpp.o initializeUDP.cpp.o getUDPData.cpp.o serial_init.c.o arduino-serial-lib.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o AirTableModel.cpp.o AirTableModel_data.cpp.o MW_raspi_init.c.o MW_Pyserver_control.c.o linuxinitialize.cpp.o ert_targets_logging.c.o raspi_file_logging.c.o
 #OBJS = captureImage.cpp.o initCamera.cpp.o imageProc.cpp.o ImageProcessing.cpp.o serial_init.c.o arduino-serial-lib.c.o arduino-serial.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o AirTableModel.cpp.o AirTableModel_data.cpp.o MW_raspi_init.c.o MW_Pyserver_control.c.o linuxinitialize.cpp.o ert_targets_logging.c.o raspi_file_logging.c.o
 
 SHARED_OBJS = $(addprefix $(join $(SHARED_BIN_DIR),/), $(addsuffix .cpp.o, $(basename $(notdir $(wildcard $(SHARED_SRC_DIR)/*.cpp)))))
@@ -477,8 +478,8 @@ serial_init.c.o : $(SERIAL_DIR)/serial_init.c
 arduino-serial-lib.c.o : $(SERIAL_DIR)/arduino-serial-lib.c
 	$(CC) $(CFLAGS) -o $@ $<
 
-arduino-serial.c.o : $(SERIAL_DIR)/arduino-serial.c
-	$(CC) $(CFLAGS) -o $@ $<
+#arduino-serial.c.o : $(SERIAL_DIR)/arduino-serial.c
+#	$(CC) $(CFLAGS) -o $@ $<
 
 PhidgetHelperFunctions.c.o : $(PHIDGET_DIR)/PhidgetHelperFunctions.c
 	$(CC) $(CFLAGS) -o $@ $<

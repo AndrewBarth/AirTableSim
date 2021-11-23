@@ -74,11 +74,6 @@ angNoisePow   = [.00001 .00001 .00001]/10;          % Want 2e-2  deg
 accelNoisePow = [.0000001 .0000001 .0000001]/10;    % Want 2e-2 m/s2
 
 
-%% Configure sensor setup
-
-% Configure Navigation type
-navType = 4;    % 1: True State 2: Measured State 3: Filtered State 4: Estimated State
-
 %% Control Output Bus
 clear elems;
 elems(1) = Simulink.BusElement;

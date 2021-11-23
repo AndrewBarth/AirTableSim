@@ -22,8 +22,10 @@ targetLoc(1,:) = [1 3];
 targetVec(1,:) = [0 -1 0];
 
 %% Tracking camera Data
+% Rotation from the frame used for calibrating the Vicon system to the frame of the air platform
 M_Tracker_To_Body = [1 0 0; 0 1 0; 0 0 1];
-R_Tracker_To_ECEF = [2 0.5 0];
+% Offset from the origin used to calibrate the Vicon system and the origin of the ECEF frame
+R_Tracker_To_ECEF = [0 0 0];
 
 %% IMU Data
 Euler_IMU_To_Body = [0.008240263376851 0.005515815051736 0.000022726070595];
