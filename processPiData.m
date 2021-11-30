@@ -1,5 +1,5 @@
 
-runname = 'AirTableModel_1';
+runname = 'AirTableModel_7';
 
 
 if length(dir(strcat(runname,'_*.mat'))) > 1
@@ -17,11 +17,19 @@ npts = length(data.rt_tout);
 
 % Collect output data
 time = data.rt_yout.signals(10).values;
+thrusterCmdsA = data.rt_yout.signals(1);
 filteredSensor = data.rt_yout.signals(2);
 rawSensor = data.rt_yout.signals(3);
+refTraj = data.rt_yout.signals(6);
+controlErrorA = data.rt_yout.signals(7);
+controlSignal = data.rt_yout.signals(9);
 filteredState = data.rt_yout.signals(11);
 estimatedState = data.rt_yout.signals(12);
+thrusterFM = data.rt_yout.signals(13);
 
+%% Thruster commands
+thrusterCmds.Time = time;
+thrusterCmds.Data = thrusterCmdsA.values;
 
 %% Raw sensor data
 % Raw position is in mm, convert to m
@@ -122,3 +130,19 @@ filtState.RotState_Body_ECEF.ECEF_To_Body_Euler.Data = filteredState.values(:,1:
 % Filtered rates
 filtState.RotState_Body_ECEF.BodyRates_wrt_ECEF_In_Body.Time = time;
 filtState.RotState_Body_ECEF.BodyRates_wrt_ECEF_In_Body.Data = filteredState.values(:,8:10);
+
+%% Control errors
+controlError.Time = time;
+controlError.Data = controlErrorA.values;
+
+%% Control signal
+controlMoment.Time = time;
+controlMoment.Data = controlSignal.values;
+
+%% Thruster force/moment
+thrusterOut.Time = time;
+thrusterOut.Data = thrusterFM.values;
+
+%% Reference trajectory
+refValues.Time = time;
+refValues.Data = refTraj.values;

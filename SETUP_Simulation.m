@@ -17,7 +17,7 @@ VSS_INPUTPORT     = Simulink.Variant('VSS_INPUT==1');
 VSS_INPUT = 1;
 
 % Configure Navigation type
-navType = 4;    % 1: True State 2: Measured State 3: Filtered State 4: Estimated State
+navType = 2;    % 1: True State 2: Measured State 3: Filtered State 4: Estimated State
 
 % Set the reference trajecotry
 refIdx = 5;

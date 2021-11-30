@@ -191,7 +191,7 @@ PHIDGET_SRC = $(PHIDGET_DIR)/PhidgetHelperFunctions.c $(PHIDGET_DIR)/Acceleromet
 IMAGE_SRC = $(IMAGE_DIR)/captureImage.cpp $(IMAGE_DIR/initCamera.cpp 
 #IMAGE_SRC = $(IMAGE_DIR)/captureImage.cpp $(IMAGE_DIR/initCamera.cpp $(IMAGE_DIR)/imageProc.cpp $(IMAGE_DIR)/ImageProcessing.cpp
 #VICON_SRC = $(VICON_DIR)/initializeDataStream.cpp $(VICON_DIR)/getDataStream.cpp
-VICON_SRC = $(VICONDIR)/initializeUDP.cpp $(VICON_DIR)/getUDPData.cpp
+VICON_SRC = $(VICON_DIR)/initializeUDP.cpp $(VICON_DIR)/getUDPData.cpp
 MAIN_SRC = $(START_DIR)/AirTableModel_ert_rtw/ert_main.cpp
 
 ALL_SRCS = $(SRCS) $(SERIAL_SRC) $(PHIDGET_SRC) $(IMAGE_SRC) $(MAIN_SRC) ${SHARED_SRC)

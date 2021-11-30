@@ -114,6 +114,7 @@ double magField[3];
 unsigned int range[4];
 int handle = 0;
 char packet_data[256];
+int frame;
 double tx;
 double ty;
 double rz;
@@ -203,6 +204,7 @@ void *baseRateTask(void *arg)
 //   }
 
     if ( (timeTic % 25) == 0) {
+    //if ( (timeTic % 50) == 0) {
 
        // Camera Data
        if (useCamera) {
@@ -226,6 +228,7 @@ void *baseRateTask(void *arg)
 
        //printf("name %c%c%c%c%c%c%c%c\n",packet_data[8],packet_data[9],packet_data[10],packet_data[11],packet_data[12],packet_data[13],packet_data[14],packet_data[15]);
        if (rc >= 0) {
+          memcpy(&frame,&packet_data[0],4*sizeof(char));
           memcpy(&tx,&packet_data[32],8*sizeof(char));
           memcpy(&ty,&packet_data[40],8*sizeof(char));
           memcpy(&rz,&packet_data[72],8*sizeof(char));
@@ -236,8 +239,9 @@ void *baseRateTask(void *arg)
        AirTableModel_Obj.AirTableModel_U.RotationData[0] = 0.0;
        AirTableModel_Obj.AirTableModel_U.RotationData[1] = 0.0;
        AirTableModel_Obj.AirTableModel_U.RotationData[2] = rz*57.2957;
+       printf("Vicon Frame: %d\n",frame);
        //printf("Location: %10.3f,  %10.3f\n",tx,ty);
-       //printf("Rotation: %10.3f\n",rz*57.2957);
+       printf("Rotation: %10.3f\n",rz*57.2957);
 
       // Reference trajectory
       AirTableModel_Obj.AirTableModel_U.refIdx = refIdx;

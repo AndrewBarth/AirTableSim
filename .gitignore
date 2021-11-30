@@ -12,3 +12,4 @@ mongoose
 *.tgz
 *.bz2
 AirTableModel_1*
+data_storage/*
