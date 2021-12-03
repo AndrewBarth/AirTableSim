@@ -1,5 +1,5 @@
 
-runname = 'AirTableModel_7';
+runname = 'AirTableModel_3';
 
 
 if length(dir(strcat(runname,'_*.mat'))) > 1
@@ -21,7 +21,7 @@ thrusterCmdsA = data.rt_yout.signals(1);
 filteredSensor = data.rt_yout.signals(2);
 rawSensor = data.rt_yout.signals(3);
 refTraj = data.rt_yout.signals(6);
-controlErrorA = data.rt_yout.signals(7);
+controlError = data.rt_yout.signals(7);
 controlSignal = data.rt_yout.signals(9);
 filteredState = data.rt_yout.signals(11);
 estimatedState = data.rt_yout.signals(12);
@@ -132,12 +132,12 @@ filtState.RotState_Body_ECEF.BodyRates_wrt_ECEF_In_Body.Time = time;
 filtState.RotState_Body_ECEF.BodyRates_wrt_ECEF_In_Body.Data = filteredState.values(:,8:10);
 
 %% Control errors
-controlError.Time = time;
-controlError.Data = controlErrorA.values;
+controlErrorBody.Time = time;
+controlErrorBody.Data = controlError.values;
 
 %% Control signal
-controlMoment.Time = time;
-controlMoment.Data = controlSignal.values;
+controlSignalBody.Time = time;
+controlSignalBody.Data = controlSignal.values;
 
 %% Thruster force/moment
 thrusterOut.Time = time;

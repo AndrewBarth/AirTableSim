@@ -1,16 +1,12 @@
-function [controlSignal,controlError,posError] = slidingModeControl(t,state,refValues,mass,inertia,SMGains)
-% Translational equations of motion for a rigid body
+function [controlSignal,controlErrorECEF,controlErrorBody] = slidingModeControl(t,state,refValues,mass,inertia,SMGains)
+% 
 % The state vector consists of 2 - 3x1 vectors. [q qdot]
-% This function is designed to be used with the ode45 function
 %
-% Inputs: t            current time step
-%         y            state vector (q qdot) 6x1
-%         refValues    reference state (pos ang vel rate) 12x1
-%         Fext         external forces 3x1
-%         Feff         effector forces 3x1
-%         Mass         mass value 1x1
-%
-% Output: dy  derivative for state array 6x1
+% Inputs: t                 current time step
+
+% Output: controlSignal    
+%         controlErrorECEF 
+%         controlErrorBody
 %
 % Assumptions and Limitations:
 %    Calculations performed about body-fixed principal axes
@@ -51,7 +47,7 @@ epsilonB = SMGains(8);
 epsilonC = SMGains(9);
 
 error = state - refValues;
-controlError = error;
+controlErrorECEF = error;
 
 M_ECEF_To_Body = EulerToDCM_321(state(4:6))';
 ePosBody = M_ECEF_To_Body*error(1:3);
@@ -59,7 +55,7 @@ eVelBody = M_ECEF_To_Body*error(7:9);
 
 error(1:3) = ePosBody;
 error(7:9) = eVelBody;
-posError = [ePosBody; error(4:6)];
+controlErrorBody = [ePosBody; error(4:6); eVelBody; error(10:12)];
 
 % Translational
 % s1 = a*2*error(1) + error(7);

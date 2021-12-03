@@ -2,6 +2,7 @@
 
 addpath('plot_scripts')
 addpath('test_scripts')
+addpath('utilities','-begin');
 
 % Set the source of the sensor data
 VSS_SIMDYNAMICS = Simulink.Variant('VSS_MODE==0');
@@ -17,14 +18,28 @@ VSS_INPUTPORT     = Simulink.Variant('VSS_INPUT==1');
 VSS_INPUT = 1;
 
 % Configure Navigation type
-navType = 2;    % 1: True State 2: Measured State 3: Filtered State 4: Estimated State
+navType = 3;    % 1: True State 2: Measured State 3: Filtered State 4: Estimated State
 
 % Set the reference trajecotry
 refIdx = 5;
 
+% Set sim execution rates
+dynamicsRate = 0.0125;
+controlRate = 0.025;
+load('ConfigSet_RPi_DynamicsRate.mat');
+load('ConfigSet_RPi_ControlRate.mat');
+
+initialState = [0.5 0 0*pi/180 0 0 0];
+
 % Load additional parameters
 loadBusData
+loadControlData
 loadSensorData
 loadThrusterData
 
 endTime = 80;
+% endTime = 10;
+
+
+
+

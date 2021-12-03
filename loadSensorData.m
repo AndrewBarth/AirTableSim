@@ -67,3 +67,31 @@ wallVec    = [(wallA(3:4)-wallA(1:2))/norm(wallA(3:4)-wallA(1:2)); ...
               (wallC(3:4)-wallC(1:2))/norm(wallC(3:4)-wallC(1:2)); ...
               (wallD(3:4)-wallD(1:2))/norm(wallD(3:4)-wallD(1:2))];
 clear wallA wallB wallC wallD
+
+%% Noise added to simulated sensor measurements
+% accelNoisePow = [.0000001 .0000001 .0000001]/.1;    % Want 2e-2 m/s2
+% rateNoisePow  = [.0000001 .0000001 .0000001]/20;    % Want 1e-3 deg/s
+% posNoisePow   = [.00001 .00001 .00001]/100;         % Want 1e-2 m (1 cm)
+% angNoisePow   = [.00001 .00001 .00001]/10;          % Want 2e-2  deg
+% accelNoisePow = [.0000001 .0000001 .0000001]/10;    % Want 2e-2 m/s2
+
+% When constrained to planar motion the linear noise in Z is zero and the
+% angular noise in X and Y are zero
+accelNoisePow = [.0000001 .0000001 .0000000]/.1;    % Want 2e-2 m/s2
+rateNoisePow  = [.0000000 .0000000 .0000001]/20;    % Want 1e-3 deg/s
+posNoisePow   = [.00001 .00001 .00000]/100;         % Want 1e-2 m (1 cm)
+angNoisePow   = [.00000 .00000 .00001]/10;          % Want 2e-2  deg
+
+% posNoisePow   = [.00001 .00001 .00000]*0;         % Want 1e-2 m (1 cm)
+%% Kalman Filter settings
+initialNavState = [initialState + [0.01 -0.01 1e-3 0 0 1e-3]];
+% initialNavState = [[initialState + [0.01 -0.01 1e-3 0 0 1e-3]] 0 0 0];
+% initialState = [0.5 0 30*pi/180 0 0 0 0 0 0];
+initialCovariance = diag([.01^2 .01^2 (2e-2*pi/180)^2 0 0 (1e-3*pi/180)^2] );
+initialCovariance = diag([999999 999999 999999 999999 999999 999999]);
+
+processNoise = 0;
+
+% measurementNoise = [1e-2 5e-2*pi/180 1e-3*pi/180 2e-2]*100;
+measurementNoise = [1 .0873 0.0017 2].* [1 1 1 1];
+measurementNoise = [1 .0873 0.0017 2].* [.01 1 1 .01];
