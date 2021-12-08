@@ -1,5 +1,5 @@
 
-runname = 'AirTableModel_3';
+runname = 'AirTableModel_4';
 
 
 if length(dir(strcat(runname,'_*.mat'))) > 1

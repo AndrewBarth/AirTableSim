@@ -30,6 +30,7 @@
 extern "C" {
 #include "arduino-serial-lib.h"
 }
+#include "DataStreamClient.h"
 #include <phidget22.h>
 #include "opencv2/opencv.hpp"
 #include "opencv2/videoio.hpp"
@@ -81,11 +82,16 @@ int subratePriority[1];
 
 using namespace cv;
 using namespace std;
+using namespace ViconDataStreamSDK::CPP;
 
 int useCamera = 0;   // Camera routines are interfering with serial comm to Arduino
 int usePhidget = 1;
-int useUDP = 1;
+int useVicon = 2;   // 0: None  1: UDP connection 2: Vicon DataStream connection
 int useSerial = 1;
+
+// Make a new Vicon DataStream client
+std::string HostName = "192.168.1.15:801";
+ViconDataStreamSDK::CPP::Client MyClient;
 
 /* Function Prototypes for Arduino comm and Phidget comm */
 extern "C" int serial_init();
@@ -95,6 +101,8 @@ extern "C" PhidgetMagnetometerHandle MagnetometerInit();
 extern "C" int DistanceInit(PhidgetDistanceSensorHandle dch[] );
 int getImage(cv::VideoCapture *cap,unsigned char imageOut[]);
 int initCamera(cv::VideoCapture *cap);
+int getDataStream(ViconDataStreamSDK::CPP::Client *MyClient, double translation[3], double rotation[3]);
+int initializeDataStream(ViconDataStreamSDK::CPP::Client *MyClient, std::string HostName);
 int initializeUDP(int *handle);
 int getUDPData(int handle, char *packet_data);
 //double imageProc(unsigned int range[4], unsigned char imageOut[307200]);
@@ -118,6 +126,8 @@ int frame;
 double tx;
 double ty;
 double rz;
+double translation[3];
+double rotation[3];
 unsigned int refIdx;
 unsigned int navType;
 double endTime;
@@ -221,27 +231,46 @@ void *baseRateTask(void *arg)
        //fwrite(imageOut,sizeof(char),sizeof(imageOut),imgfid);
        //fclose(imgfid);
 
-       // Vision Tracker Data
-       if (useUDP) {
+       // Vicon Tracker Data
+       if (useVicon == 1) {
           rc = getUDPData(handle, packet_data);
+
+          //printf("name %c%c%c%c%c%c%c%c\n",packet_data[8],packet_data[9],packet_data[10],packet_data[11],packet_data[12],packet_data[13],packet_data[14],packet_data[15]);
+          if (rc >= 0) {
+             memcpy(&frame,&packet_data[0],4*sizeof(char));
+             memcpy(&tx,&packet_data[32],8*sizeof(char));
+             memcpy(&ty,&packet_data[40],8*sizeof(char));
+             memcpy(&rz,&packet_data[72],8*sizeof(char));
+          }
+          AirTableModel_Obj.AirTableModel_U.PositionData[0] = tx;
+          AirTableModel_Obj.AirTableModel_U.PositionData[1] = ty;
+          AirTableModel_Obj.AirTableModel_U.PositionData[2] = 0.0;
+          AirTableModel_Obj.AirTableModel_U.RotationData[0] = 0.0;
+          AirTableModel_Obj.AirTableModel_U.RotationData[1] = 0.0;
+          AirTableModel_Obj.AirTableModel_U.RotationData[2] = rz*57.2957;
+          printf("Vicon Frame: %d\n",frame);
+          //printf("Location: %10.3f,  %10.3f\n",tx,ty);
+          printf("Rotation: %10.3f\n",rz*57.2957);
+       } else if (useVicon == 2) {
+          rc = getDataStream(&MyClient,translation,rotation);
+
+          AirTableModel_Obj.AirTableModel_U.PositionData[0] = translation[0];
+          AirTableModel_Obj.AirTableModel_U.PositionData[1] = translation[1];
+          AirTableModel_Obj.AirTableModel_U.PositionData[2] = 0.0;
+          AirTableModel_Obj.AirTableModel_U.RotationData[0] = 0.0;
+          AirTableModel_Obj.AirTableModel_U.RotationData[1] = 0.0;
+          AirTableModel_Obj.AirTableModel_U.RotationData[2] = rotation[2]*57.2957;
+          printf("Location: %10.3f,  %10.3f\n",translation[0],translation[1]);
+          printf("Rotation: %10.3f\n",rotation[2]*57.2957);
+       } else {
+          AirTableModel_Obj.AirTableModel_U.PositionData[0] = 0.0;
+          AirTableModel_Obj.AirTableModel_U.PositionData[1] = 0.0;
+          AirTableModel_Obj.AirTableModel_U.PositionData[2] = 0.0;
+          AirTableModel_Obj.AirTableModel_U.RotationData[0] = 0.0;
+          AirTableModel_Obj.AirTableModel_U.RotationData[1] = 0.0;
+          AirTableModel_Obj.AirTableModel_U.RotationData[2] = 0.0;
        }
 
-       //printf("name %c%c%c%c%c%c%c%c\n",packet_data[8],packet_data[9],packet_data[10],packet_data[11],packet_data[12],packet_data[13],packet_data[14],packet_data[15]);
-       if (rc >= 0) {
-          memcpy(&frame,&packet_data[0],4*sizeof(char));
-          memcpy(&tx,&packet_data[32],8*sizeof(char));
-          memcpy(&ty,&packet_data[40],8*sizeof(char));
-          memcpy(&rz,&packet_data[72],8*sizeof(char));
-       }
-       AirTableModel_Obj.AirTableModel_U.PositionData[0] = tx;
-       AirTableModel_Obj.AirTableModel_U.PositionData[1] = ty;
-       AirTableModel_Obj.AirTableModel_U.PositionData[2] = 0.0;
-       AirTableModel_Obj.AirTableModel_U.RotationData[0] = 0.0;
-       AirTableModel_Obj.AirTableModel_U.RotationData[1] = 0.0;
-       AirTableModel_Obj.AirTableModel_U.RotationData[2] = rz*57.2957;
-       printf("Vicon Frame: %d\n",frame);
-       //printf("Location: %10.3f,  %10.3f\n",tx,ty);
-       printf("Rotation: %10.3f\n",rz*57.2957);
 
       // Reference trajectory
       AirTableModel_Obj.AirTableModel_U.refIdx = refIdx;
@@ -410,8 +439,8 @@ int main(int argc, char **argv)
      rc = serialport_write(serial_fd,"00000000");
   }
 
-  // Open UDP channel to Vicon data
-  if (useUDP) {
+  // Open channel to Vicon data
+  if (useVicon == 1) {
      rc = initializeUDP(&handle);
 
      rc = -1;
@@ -422,6 +451,10 @@ int main(int argc, char **argv)
      memcpy(&tx,&packet_data[32],8*sizeof(char));
      memcpy(&ty,&packet_data[40],8*sizeof(char));
      memcpy(&rz,&packet_data[72],8*sizeof(char));
+  } else if (useVicon == 2) {
+     // Initialize and get first set of data
+     rc = initializeDataStream(&MyClient, HostName);
+     rc = getDataStream(&MyClient,translation,rotation);
   }
 
   // Open Phidget Channels

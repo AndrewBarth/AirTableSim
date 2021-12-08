@@ -65,17 +65,16 @@ for i=1:nTrajPts
 end
 disp(cmd)
 if refIdx == 0
-    % IC Position, then simulataneous translation and rotation, then rotate and
-    % start approach control
-    position_1 = [1.0 1.5];
-    angle_1 = 30*dtr;
-    angle_2 = 90*dtr;
-    cmd(1,:) = IC;
-    cmd(2,:) = IC;
-    cmd(3,[1:2 6]) = [position_1 angle_1];  % New position and angle
-    cmd(4,[1:2 6]) = [position_1 angle_1];  
-    cmd(5,[6 13:15]) = [angle_2 0 1 1.5-0.45];  % New angle (disabled approach contol)
-    cmd(6,[6 13:15]) = [angle_2 0 1 0.25];  % New angle (disabled approach control)
+    % Hold Initial Position
+    position_0 = [nav_ECEFpos(1:2)'];
+    angle_0 = nav_EulerA(3);
+    cmd(1,[1:2 6]) = [position_0 angle_0];
+    cmd(2,[1:2 6]) = [position_0 angle_0];
+    cmd(3,[1:2 6]) = [position_0 angle_0];
+    cmd(4,[1:2 6]) = [position_0 angle_0];
+    cmd(5,[1:2 6]) = [position_0 angle_0];
+    cmd(6,[1:2 6]) = [position_0 angle_0];
+
 elseif refIdx == 1
     % +X translation
     position_0 = [nav_ECEFpos(1:2)'];
@@ -143,6 +142,18 @@ elseif refIdx == 6
     cmd(4,[1:2 6]) = [position_0 angle_1];
     cmd(5,[1:2 6]) = [position_0 angle_1];
     cmd(6,[1:2 6]) = [position_0 angle_1];
+elseif refIdx == 7
+    % IC Position, then simulataneous translation and rotation, then rotate and
+    % start approach control
+    position_1 = [1.0 1.5];
+    angle_1 = 30*dtr;
+    angle_2 = 90*dtr;
+    cmd(1,:) = IC;
+    cmd(2,:) = IC;
+    cmd(3,[1:2 6]) = [position_1 angle_1];  % New position and angle
+    cmd(4,[1:2 6]) = [position_1 angle_1];  
+    cmd(5,[6 13:15]) = [angle_2 0 1 1.5-0.45];  % New angle (disabled approach contol)
+    cmd(6,[6 13:15]) = [angle_2 0 1 0.25];  % New angle (disabled approach control)
 end
 
 % Add dummy points to the trajectory so that the command transitions are

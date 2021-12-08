@@ -23,6 +23,12 @@ function [controlSignal,controlErrorECEF,controlErrorBody] = slidingModeControl(
 %    Fy = m*(vdoty + wz*vx - wx*vz)
 %    Fz = m*(vdotz + wx*vy - wy*vx)
 %
+%    Euler equations of motion
+%    M = I*wDot + w X Iw
+%    Mx = I1*wxDot + (I3-I2)*wy*wz
+%    My = I2*wyDot + (I1-I3)*wz*wx
+%    Mz = I3*wzDot + (I2-I1)*wx*wy
+%
 % Author: Andrew Barth
 %
 % Modification History:

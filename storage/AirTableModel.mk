@@ -190,8 +190,7 @@ SERIAL_SRC  = $(SERIAL_DIR)/serial_init.c $(SERIAL_DIR)/arduino-serial-lib.c
 PHIDGET_SRC = $(PHIDGET_DIR)/PhidgetHelperFunctions.c $(PHIDGET_DIR)/AccelerometerInit.c $(PHIDGET_DIR)/MagnetometerInit.c $(PHIDGET_DIR)/DistanceInit.c
 IMAGE_SRC = $(IMAGE_DIR)/captureImage.cpp $(IMAGE_DIR/initCamera.cpp 
 #IMAGE_SRC = $(IMAGE_DIR)/captureImage.cpp $(IMAGE_DIR/initCamera.cpp $(IMAGE_DIR)/imageProc.cpp $(IMAGE_DIR)/ImageProcessing.cpp
-#VICON_SRC = $(VICON_DIR)/initializeDataStream.cpp $(VICON_DIR)/getDataStream.cpp
-VICON_SRC = $(VICON_DIR)/initializeUDP.cpp $(VICON_DIR)/getUDPData.cpp
+VICON_SRC = $(VICON_DIR)/initializeUDP.cpp $(VICON_DIR)/getUDPData.cpp $(VICON_DIR)/initializeDataStream.cpp $(VICON_DIR)/getDataStream.cpp
 MAIN_SRC = $(START_DIR)/AirTableModel_ert_rtw/ert_main.cpp
 
 ALL_SRCS = $(SRCS) $(SERIAL_SRC) $(PHIDGET_SRC) $(IMAGE_SRC) $(MAIN_SRC) ${SHARED_SRC)
@@ -200,7 +199,7 @@ ALL_SRCS = $(SRCS) $(SERIAL_SRC) $(PHIDGET_SRC) $(IMAGE_SRC) $(MAIN_SRC) ${SHARE
 ## OBJECTS
 ###########################################################################
 
-OBJS = captureImage.cpp.o initCamera.cpp.o initializeUDP.cpp.o getUDPData.cpp.o serial_init.c.o arduino-serial-lib.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o AirTableModel.cpp.o AirTableModel_data.cpp.o MW_raspi_init.c.o MW_Pyserver_control.c.o linuxinitialize.cpp.o ert_targets_logging.c.o raspi_file_logging.c.o
+OBJS = captureImage.cpp.o initCamera.cpp.o initializeUDP.cpp.o getUDPData.cpp.o initializeDataStream.cpp.o getDataStream.cpp.o serial_init.c.o arduino-serial-lib.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o AirTableModel.cpp.o AirTableModel_data.cpp.o MW_raspi_init.c.o MW_Pyserver_control.c.o linuxinitialize.cpp.o ert_targets_logging.c.o raspi_file_logging.c.o
 #OBJS = captureImage.cpp.o initCamera.cpp.o imageProc.cpp.o ImageProcessing.cpp.o serial_init.c.o arduino-serial-lib.c.o arduino-serial.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o AirTableModel.cpp.o AirTableModel_data.cpp.o MW_raspi_init.c.o MW_Pyserver_control.c.o linuxinitialize.cpp.o ert_targets_logging.c.o raspi_file_logging.c.o
 
 SHARED_OBJS = $(addprefix $(join $(SHARED_BIN_DIR),/), $(addsuffix .cpp.o, $(basename $(notdir $(wildcard $(SHARED_SRC_DIR)/*.cpp)))))
@@ -220,7 +219,9 @@ PREBUILT_OBJS =
 
 MODELREF_LIBS = ../slprj/ert/ApproachControl/ApproachControl_rtwlib.lib ../slprj/ert/AttitudeDynamics/AttitudeDynamics_rtwlib.lib ../slprj/ert/FormStateBus/FormStateBus_rtwlib.lib ../slprj/ert/PIDControl/PIDControl_rtwlib.lib ../slprj/ert/ReactionWheel0/ReactionWheel0_rtwlib.lib ../slprj/ert/SlidingModeControl/SlidingModeControl_rtwlib.lib ../slprj/ert/ThrusterModel0/ThrusterModel0_rtwlib.lib ../slprj/ert/TranslationalDynamics/TranslationalDynamics_rtwlib.lib ../slprj/ert/UseHWSensorData/UseHWSensorData_rtwlib.lib
 
-LIBS = $(START_DIR)/slprj/ert/_sharedutils/rtwshared.lib
+VICON_LIBS = -lViconDataStreamSDKCore -lViconCGStreamClientSDK -lViconCGStreamClient -lViconCGStream -lStreamCommon -lViconDataStreamSDK_CPP
+
+LIBS = $(VICON_LIBS) $(START_DIR)/slprj/ert/_sharedutils/rtwshared.lib
 
 ###########################################################################
 ## SYSTEM LIBRARIES
@@ -470,6 +471,12 @@ initializeUDP.cpp.o : $(VICON_DIR)/initializeUDP.cpp
 	$(CC) $(CFLAGS) -o $@ $<
 
 getUDPData.cpp.o : $(VICON_DIR)/getUDPData.cpp
+	$(CC) $(CFLAGS) -o $@ $<
+
+initializeDataStream.cpp.o : $(VICON_DIR)/initializeDataStream.cpp
+	$(CC) $(CFLAGS) -o $@ $<
+
+getDataStream.cpp.o : $(VICON_DIR)/getDataStream.cpp
 	$(CC) $(CFLAGS) -o $@ $<
 
 serial_init.c.o : $(SERIAL_DIR)/serial_init.c
