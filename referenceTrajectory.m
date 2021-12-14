@@ -1,4 +1,4 @@
-function [newrefTraj] = referenceTrajectory(IC_State,refIdx,PositionData,rawPosition,RotationData)
+function [newrefTraj] = referenceTrajectory(IC_State,refIdx,controlType,PositionData,rawPosition,RotationData)
 % Function to compute a reference trajectory for the vehicle, which will be
 % used as the commanded position, orientation, velocity, angular rates.
 % The output reference trajectory contains the elements of:
@@ -14,7 +14,8 @@ function [newrefTraj] = referenceTrajectory(IC_State,refIdx,PositionData,rawPosi
 % element 16    desired range
 %
 % Inputs: IC_State      Inital state of the vehicle
-%         refIdx        Index for which reference trajectory to usse  
+%         refIdx        Index for which reference trajectory to uss
+%         controlType   Type of controller being used
 %         PositionData  Current position of the vehicle from Navigation
 %         rawPosition   Current position of the vehicle
 %         RotationData  Current orientation of the vehicle
@@ -31,7 +32,7 @@ function [newrefTraj] = referenceTrajectory(IC_State,refIdx,PositionData,rawPosi
 %
 % Modification History:
 %    May    2019 - Initial version
-%
+%    Dec 13 2021 - Re-formatted how ref traj is setup
 
 
 dtr = pi/180;
@@ -168,12 +169,17 @@ for i = 2:size(timeline,2)-1
     newcmd(2*(i-1),:)   = cmd(i,:);
     newcmd(2*(i-1) + 1,:) = cmd(i,:);
     
-    % Form a velocity command based on the requested change in position
-    newcmd(2*(i-1),7:8) = (cmd(i,1:2) - cmd(i-1,1:2)) / (timeline(i) - timeline(i-1));
-    newcmd(2*(i-1) + 1,7:8) = (cmd(i+1,1:2) - cmd(i,1:2)) / (timeline(i+1) - timeline(i));
-    % Form an angular rate command based on the requested change in angle
-    newcmd(2*(i-1),12) = (cmd(i,6) - cmd(i-1,6)) / (timeline(i) - timeline(i-1));
-    newcmd(2*(i-1) + 1,12) = (cmd(i+1,6) - cmd(i,6)) / (timeline(i+1) - timeline(i));
+    % Phase plane controller should not have a velocity and rate command
+    if controlType ~= 3
+        % Form a velocity command based on the requested change in position
+         newcmd(2*(i-1),7:8) = (cmd(i,1:2) - cmd(i-1,1:2)) / (timeline(i) - timeline(i-1));
+         newcmd(2*(i-1) + 1,7:8) = (cmd(i+1,1:2) - cmd(i,1:2)) / (timeline(i+1) - timeline(i));
+
+        % Form an angular rate command based on the requested change in angle
+         newcmd(2*(i-1),12) = (cmd(i,6) - cmd(i-1,6)) / (timeline(i) - timeline(i-1));
+         newcmd(2*(i-1) + 1,12) = (cmd(i+1,6) - cmd(i,6)) / (timeline(i+1) - timeline(i));
+    end
+    
 end
 newtimeline(end) = timeline(end);
 newcmd(end,:) = cmd(end,:);

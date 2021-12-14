@@ -1,6 +1,6 @@
 
+dtr = pi/180;
 
-controlType = 2;   % 1 sliding mode, 2 PID
 % Kp = [100 100 0 0 0 30];
 % Kd = [200 200 0 0 0 10];
 % Ki = [0 0 0 0 0 0];
@@ -20,6 +20,14 @@ Ki = [4  4  0 0 0 1] .*[1   1  0 0 0 0];
 Kp = [70 70 0 0 0 20].*[.2 .2  0 0 0 .25];
 Kd = [80 80 0 0 0 5] .*[.2 .2  0 0 0 .1];
 Ki = [4  4  0 0 0 1] .*[1   1  0 0 0 .5];
+
+Kp = [14 14 0 0 0 5];
+Kd = [16 16 0 0 0 0.5];
+Ki = [4  4  0 0 0 0.5];
+
+Kp = [14 14 0 0 0 2];
+Kd = [16 16 0 0 0 1.3];
+Ki = [4  4  0 0 0 0.0];
 % 
 % Kp = [70 70   0 0 0 20]*.01;
 % Kd = [80 80 0 0 0 5]*.1;
@@ -46,3 +54,33 @@ SMGains = [3.5078    3.9888    6.3119    1.8214    4.7749    7.3059    3.6553   
 % SMGains = [1 1 2 1 1 1 1 1 1];
 % SMGains = [2 2 12 2 2 1 1 1 10];
 % SMGains = [8.6506    4.1815    6.1690    9.8805    6.3439    0.1717    1.0000   13.0080   10.0000];
+
+
+%% Gains for Phase Plane controller
+
+% X Translation channel
+drift_channel_db = 0.1;
+drift_channel_rate = 0.01;
+drift_channel_width = 0.05;
+max_cmd = 100.0;
+
+PPGains = [drift_channel_db drift_channel_rate drift_channel_width max_cmd];
+
+% Y Translation channel
+drift_channel_db = 0.1;
+drift_channel_rate = 0.01;
+drift_channel_width = 0.05;
+max_cmd = 100.0;
+
+PPGains = [PPGains drift_channel_db drift_channel_rate drift_channel_width max_cmd];
+
+% Attitude channel
+% drift_channel_db = 5*dtr;
+% drift_channel_rate = 0.1*dtr;
+% drift_channel_width = 0.5 *dtr;
+drift_channel_db = 7*dtr;
+drift_channel_rate = 0.5*dtr;
+drift_channel_width = 1.2 *dtr;
+max_cmd = 100.0;
+
+PPGains = [PPGains drift_channel_db drift_channel_rate drift_channel_width max_cmd];

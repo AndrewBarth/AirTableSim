@@ -130,6 +130,7 @@ double translation[3];
 double rotation[3];
 unsigned int refIdx;
 unsigned int navType;
+unsigned int controlType;
 double endTime;
 
 cv::VideoCapture cap;
@@ -278,6 +279,10 @@ void *baseRateTask(void *arg)
       // Navigation type
       AirTableModel_Obj.AirTableModel_U.navType = navType;
 
+      // Controller type
+      AirTableModel_Obj.AirTableModel_U.controlType = controlType;
+ 
+
       // IMU and Range Data
        prc = PhidgetAccelerometer_getAcceleration(ach, &acceleration);
        prc = PhidgetGyroscope_getAngularRate(gch, &angularRate);
@@ -422,7 +427,12 @@ int main(int argc, char **argv)
      navType = 2;
   }
   if (argc > 3) {
-     endTime = atof(argv[3]);
+     controlType = atof(argv[3]);
+  } else {
+     controlType = 3;
+  }
+  if (argc > 4) {
+     endTime = atof(argv[4]);
   } else {
      endTime = 20.0;
   }

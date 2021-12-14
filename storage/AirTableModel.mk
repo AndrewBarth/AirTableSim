@@ -156,7 +156,7 @@ BUILD_TYPE = "Top-Level Standalone Executable"
 ## INCLUDE PATHS
 ###########################################################################
 
-INCLUDES_BUILDINFO = -I$(START_DIR)/slprj/ert/UseHWSensorData -I$(START_DIR)/slprj/ert/TranslationalDynamics -I$(START_DIR)/slprj/ert/ThrusterModel0 -I$(START_DIR)/slprj/ert/SlidingModeControl -I$(START_DIR)/slprj/ert/ReactionWheel0 -I$(START_DIR)/slprj/ert/PIDControl -I$(START_DIR)/slprj/ert/FormStateBus -I$(START_DIR)/slprj/ert/AttitudeDynamics -I$(START_DIR)/slprj/ert/ApproachControl -I$(START_DIR) -I$(START_DIR)/AirTableModel_ert_rtw -I$(MATLAB_ROOT)/extern/include -I$(MATLAB_ROOT)/simulink/include -I$(MATLAB_ROOT)/rtw/c/src -I$(MATLAB_ROOT)/rtw/c/src/ext_mode/common -I$(MATLAB_ROOT)/rtw/c/ert -I$(START_DIR)/slprj/ert/_sharedutils -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/realtime/targets/raspi/include -I$(MATLAB_ROOT)/toolbox/coder/rtiostream/src/utils -I$(MATLAB_ROOT)/toolbox/target/codertarget/rtos/inc -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/shared/file_logging/include
+INCLUDES_BUILDINFO = -I$(START_DIR)/slprj/ert/UseHWSensorData -I$(START_DIR)/slprj/ert/TranslationalDynamics -I$(START_DIR)/slprj/ert/ThrusterModel0 -I$(START_DIR)/slprj/ert/SlidingModeControl -I$(START_DIR)/slprj/ert/ReactionWheel0 -I$(START_DIR)/slprj/ert/PIDControl -I$(START_DIR)/slprj/ert/PhasePlaneControl -I$(START_DIR)/slprj/ert/FormStateBus -I$(START_DIR)/slprj/ert/AttitudeDynamics -I$(START_DIR)/slprj/ert/ApproachControl -I$(START_DIR) -I$(START_DIR)/AirTableModel_ert_rtw -I$(MATLAB_ROOT)/extern/include -I$(MATLAB_ROOT)/simulink/include -I$(MATLAB_ROOT)/rtw/c/src -I$(MATLAB_ROOT)/rtw/c/src/ext_mode/common -I$(MATLAB_ROOT)/rtw/c/ert -I$(START_DIR)/slprj/ert/_sharedutils -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/realtime/targets/raspi/include -I$(MATLAB_ROOT)/toolbox/coder/rtiostream/src/utils -I$(MATLAB_ROOT)/toolbox/target/codertarget/rtos/inc -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/shared/file_logging/include
 
 INCLUDES_OPENCV = -I/usr/local/include/opencv4
 INCLUDES_SERIAL = -I$(SERIAL_DIR)
@@ -182,7 +182,7 @@ DEFINES = $(DEFINES_) $(DEFINES_BUILD_ARGS) $(DEFINES_CUSTOM) $(DEFINES_OPTS) $(
 ## SOURCE FILES
 ###########################################################################
 
-SRCS = $(START_DIR)/AirTableModel_ert_rtw/AirTableModel.cpp $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_data.cpp $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/realtime/targets/raspi/src/MW_raspi_init.c $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/realtime/targets/raspi/src/periphs/MW_Pyserver_control.c $(MATLAB_ROOT)/toolbox/target/codertarget/rtos/src/linuxinitialize.cpp $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/shared/file_logging/src/ert_targets_logging.c $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/raspberrypi/src/raspi_file_logging.c
+SRCS = $(START_DIR)/AirTableModel_ert_rtw/AirTableModel.cpp $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_data.cpp $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/realtime/targets/raspi/src/MW_raspi_init.c $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/realtime/targets/raspi/src/periphs/MW_Pyserver_control.c $(MATLAB_ROOT)/toolbox/target/codertarget/rtos/src/linuxinitialize.cpp $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/shared/file_logging/src/ert_targets_logging.c $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/raspberrypi/src/raspi_file_logging.c $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_FilterVector.cpp $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_FilterVector1.cpp $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_FilterVector2.cpp $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_FilterVector3.cpp $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_FilterVector4.cpp
 
 SHARED_SRC= $(SHARED_SRC_DIR)/*.cpp
 #SERIAL_SRC  = $(SERIAL_DIR)/serial_init.c $(SERIAL_DIR)/arduino-serial-lib.c $(SERIAL_DIR)/arduino-serial.c
@@ -199,7 +199,7 @@ ALL_SRCS = $(SRCS) $(SERIAL_SRC) $(PHIDGET_SRC) $(IMAGE_SRC) $(MAIN_SRC) ${SHARE
 ## OBJECTS
 ###########################################################################
 
-OBJS = captureImage.cpp.o initCamera.cpp.o initializeUDP.cpp.o getUDPData.cpp.o initializeDataStream.cpp.o getDataStream.cpp.o serial_init.c.o arduino-serial-lib.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o AirTableModel.cpp.o AirTableModel_data.cpp.o MW_raspi_init.c.o MW_Pyserver_control.c.o linuxinitialize.cpp.o ert_targets_logging.c.o raspi_file_logging.c.o
+OBJS = captureImage.cpp.o initCamera.cpp.o initializeUDP.cpp.o getUDPData.cpp.o initializeDataStream.cpp.o getDataStream.cpp.o serial_init.c.o arduino-serial-lib.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o AirTableModel.cpp.o AirTableModel_data.cpp.o MW_raspi_init.c.o MW_Pyserver_control.c.o linuxinitialize.cpp.o ert_targets_logging.c.o raspi_file_logging.c.o AirTableModel_FilterVector.cpp.o AirTableModel_FilterVector1.cpp.o AirTableModel_FilterVector2.cpp.o  AirTableModel_FilterVector3.cpp.o  AirTableModel_FilterVector4.cpp.o
 #OBJS = captureImage.cpp.o initCamera.cpp.o imageProc.cpp.o ImageProcessing.cpp.o serial_init.c.o arduino-serial-lib.c.o arduino-serial.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o AirTableModel.cpp.o AirTableModel_data.cpp.o MW_raspi_init.c.o MW_Pyserver_control.c.o linuxinitialize.cpp.o ert_targets_logging.c.o raspi_file_logging.c.o
 
 SHARED_OBJS = $(addprefix $(join $(SHARED_BIN_DIR),/), $(addsuffix .cpp.o, $(basename $(notdir $(wildcard $(SHARED_SRC_DIR)/*.cpp)))))
@@ -217,7 +217,7 @@ PREBUILT_OBJS =
 ## LIBRARIES
 ###########################################################################
 
-MODELREF_LIBS = ../slprj/ert/ApproachControl/ApproachControl_rtwlib.lib ../slprj/ert/AttitudeDynamics/AttitudeDynamics_rtwlib.lib ../slprj/ert/FormStateBus/FormStateBus_rtwlib.lib ../slprj/ert/PIDControl/PIDControl_rtwlib.lib ../slprj/ert/ReactionWheel0/ReactionWheel0_rtwlib.lib ../slprj/ert/SlidingModeControl/SlidingModeControl_rtwlib.lib ../slprj/ert/ThrusterModel0/ThrusterModel0_rtwlib.lib ../slprj/ert/TranslationalDynamics/TranslationalDynamics_rtwlib.lib ../slprj/ert/UseHWSensorData/UseHWSensorData_rtwlib.lib
+MODELREF_LIBS = ../slprj/ert/ApproachControl/ApproachControl_rtwlib.lib ../slprj/ert/AttitudeDynamics/AttitudeDynamics_rtwlib.lib ../slprj/ert/FormStateBus/FormStateBus_rtwlib.lib ../slprj/ert/PIDControl/PIDControl_rtwlib.lib  ../slprj/ert/PhasePlaneControl/PhasePlaneControl_rtwlib.lib ../slprj/ert/ReactionWheel0/ReactionWheel0_rtwlib.lib ../slprj/ert/SlidingModeControl/SlidingModeControl_rtwlib.lib ../slprj/ert/ThrusterModel0/ThrusterModel0_rtwlib.lib ../slprj/ert/TranslationalDynamics/TranslationalDynamics_rtwlib.lib ../slprj/ert/UseHWSensorData/UseHWSensorData_rtwlib.lib
 
 VICON_LIBS = -lViconDataStreamSDKCore -lViconCGStreamClientSDK -lViconCGStreamClient -lViconCGStream -lStreamCommon -lViconDataStreamSDK_CPP
 
@@ -340,7 +340,7 @@ execute : download
 
 $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS) $(MODELREF_LIBS) $(LIBS) $(MAIN_OBJ)
 	echo "### Creating standalone executable "$(PRODUCT)" ..."
-	$(CPP_LD) $(CPP_LDFLAGS) -o $(PRODUCT) $(OBJS) $(MAIN_OBJ) ../slprj/ert/ApproachControl/ApproachControl_rtwlib.lib ../slprj/ert/AttitudeDynamics/AttitudeDynamics_rtwlib.lib ../slprj/ert/FormStateBus/FormStateBus_rtwlib.lib ../slprj/ert/PIDControl/PIDControl_rtwlib.lib ../slprj/ert/ReactionWheel0/ReactionWheel0_rtwlib.lib ../slprj/ert/SlidingModeControl/SlidingModeControl_rtwlib.lib ../slprj/ert/ThrusterModel0/ThrusterModel0_rtwlib.lib ../slprj/ert/TranslationalDynamics/TranslationalDynamics_rtwlib.lib ../slprj/ert/UseHWSensorData/UseHWSensorData_rtwlib.lib $(LIBS) $(SYSTEM_LIBS) $(TOOLCHAIN_LIBS)
+	$(CPP_LD) $(CPP_LDFLAGS) -o $(PRODUCT) $(OBJS) $(MAIN_OBJ) ../slprj/ert/ApproachControl/ApproachControl_rtwlib.lib ../slprj/ert/AttitudeDynamics/AttitudeDynamics_rtwlib.lib ../slprj/ert/FormStateBus/FormStateBus_rtwlib.lib ../slprj/ert/PIDControl/PIDControl_rtwlib.lib ../slprj/ert/PhasePlaneControl/PhasePlaneControl_rtwlib.lib ../slprj/ert/ReactionWheel0/ReactionWheel0_rtwlib.lib ../slprj/ert/SlidingModeControl/SlidingModeControl_rtwlib.lib ../slprj/ert/ThrusterModel0/ThrusterModel0_rtwlib.lib ../slprj/ert/TranslationalDynamics/TranslationalDynamics_rtwlib.lib ../slprj/ert/UseHWSensorData/UseHWSensorData_rtwlib.lib $(LIBS) $(SYSTEM_LIBS) $(TOOLCHAIN_LIBS)
 	echo "### Created: $(PRODUCT)"
 
 
@@ -434,6 +434,23 @@ AirTableModel.cpp.o : $(START_DIR)/AirTableModel_ert_rtw/AirTableModel.cpp
 
 AirTableModel_data.cpp.o : $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_data.cpp
 	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+AirTableModel_FilterVector.cpp.o : $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_FilterVector.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+AirTableModel_FilterVector1.cpp.o : $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_FilterVector1.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+AirTableModel_FilterVector2.cpp.o : $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_FilterVector2.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+AirTableModel_FilterVector3.cpp.o : $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_FilterVector3.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+AirTableModel_FilterVector4.cpp.o : $(START_DIR)/AirTableModel_ert_rtw/AirTableModel_FilterVector4.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
 
 
 MW_raspi_init.c.o : $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/realtime/targets/raspi/src/MW_raspi_init.c
