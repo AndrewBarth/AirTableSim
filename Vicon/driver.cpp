@@ -31,6 +31,7 @@ int initializeDataStream(ViconDataStreamSDK::CPP::Client *MyClient, std::string 
    int rc;
    int handle = 0; 
    char packet_data[256];	
+   int frame;
    double tx;
    double ty;
    double rz;
@@ -39,35 +40,37 @@ int initializeDataStream(ViconDataStreamSDK::CPP::Client *MyClient, std::string 
 
 int main(int argc, char **argv) {
 
-//   std::string HostName = "192.168.1.17:801";
+   std::string HostName = "192.168.1.15:801";
    if( argc > 1 )
    {
-//     HostName = argv[1];
+     HostName = argv[1];
    }
    // Make a new client
-//   ViconDataStreamSDK::CPP::Client MyClient;
+   ViconDataStreamSDK::CPP::Client MyClient;
 
-//   rc = initializeDataStream(&MyClient, HostName);
+   rc = initializeDataStream(&MyClient, HostName);
 
-   rc = initializeUDP(&handle);
+//   rc = initializeUDP(&handle);
 
    while(1) {
    rc = -1;
-   while(rc == -1) {
-      rc = getUDPData(handle, packet_data);
-      printf("Waiting for UDP data\n");
-   }
-   printf("get return: %d\n",rc);
-   printf("name %c%c%c%c%c%c%c%c\n",packet_data[8],packet_data[9],packet_data[10],packet_data[11],packet_data[12],packet_data[13],packet_data[14],packet_data[15]);
-   memcpy(&tx,&packet_data[32],8*sizeof(char));
-   memcpy(&ty,&packet_data[40],8*sizeof(char));
-   memcpy(&rz,&packet_data[72],8*sizeof(char));
-   printf("tx %10.3f\nty %10.3f\n",tx,ty);
-   printf("rz %10.3f\n",rz*57.2957);
+//   while(rc == -1) {
+//      rc = getUDPData(handle, packet_data);
+//      printf("Waiting for UDP data\n");
+//   }
+//   printf("get return: %d\n",rc);
+//   memcpy(&frame,&packet_data[0],4*sizeof(char));
+//   printf("Frame: %d\n",frame);
+//   printf("name %c%c%c%c%c%c%c%c\n",packet_data[8],packet_data[9],packet_data[10],packet_data[11],packet_data[12],packet_data[13],packet_data[14],packet_data[15]);
+//   memcpy(&tx,&packet_data[32],8*sizeof(char));
+//   memcpy(&ty,&packet_data[40],8*sizeof(char));
+//   memcpy(&rz,&packet_data[72],8*sizeof(char));
+//   printf("tx %10.3f\nty %10.3f\n",tx,ty);
+//   printf("rz %10.3f\n",rz*57.2957);
 
-//   rc = getDataStream(&MyClient,translation,rotation);
-//   printf("Global Translation: %7.3f, %7.3f, %7.3f\n",translation[0],translation[1],translation[2]);
-//   printf("Global Rotation: %7.3f, %7.3f, %7.3f\n",rotation[0]*57.2958,rotation[1]*57.2958,rotation[2]*57.2958);
+   rc = getDataStream(&MyClient,translation,rotation);
+   printf("Global Translation: %7.3f, %7.3f, %7.3f\n",translation[0],translation[1],translation[2]);
+   printf("Global Rotation: %7.3f, %7.3f, %7.3f\n",rotation[0]*57.2958,rotation[1]*57.2958,rotation[2]*57.2958);
    }
 
    return 0;
