@@ -38,6 +38,7 @@ initialState = [0.5 0 0*pi/180 0 0 0];
 
 % Load additional parameters
 loadBusData
+loadGuidanceData
 loadControlData
 loadSensorData
 loadThrusterData

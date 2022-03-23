@@ -7,11 +7,6 @@ function [newrefTraj] = referenceTrajectory(IC_State,refIdx,controlType,Position
 % element 5:7   Euler angles (roll, pitch, yaw)
 % element 8:10  velocity vector (vx, vy, vz)
 % element 11:13 angular rates (wx, wy, wz)
-% element 14    flag to indicate if approach control is to be used
-%               A 0 value will make elements 15 and 16 unused
-% element 15    range sensor indx (this value represents the range sensor
-%               that will be facing the target
-% element 16    desired range
 %
 % Inputs: IC_State      Inital state of the vehicle
 %         refIdx        Index for which reference trajectory to uss
@@ -33,7 +28,7 @@ function [newrefTraj] = referenceTrajectory(IC_State,refIdx,controlType,Position
 % Modification History:
 %    May    2019 - Initial version
 %    Dec 13 2021 - Re-formatted how ref traj is setup
-
+%    Mar 23 2022 - Moved range guidance data out of the reference traj
 
 dtr = pi/180;
 
@@ -41,7 +36,7 @@ IC_ECEFpos = IC_State.TranState_ECEF.R_Sys_ECEF;
 IC_ECEFvel = IC_State.TranState_ECEF.V_Sys_ECEF;
 IC_EulerA = IC_State.RotState_Body_ECEF.ECEF_To_Body_Euler;
 IC_Rates = IC_State.RotState_Body_ECEF.BodyRates_wrt_ECEF_In_Body;
-IC       = [IC_ECEFpos' IC_EulerA' IC_ECEFvel' IC_Rates' 0 1 0];
+IC       = [IC_ECEFpos' IC_EulerA' IC_ECEFvel' IC_Rates'];
 
 if norm(rawPosition) > eps
     nav_ECEFpos = PositionData;
@@ -60,7 +55,8 @@ timeline = [0 3.0 40 45 70 90];
 % All trajectories are initialized with the vehicle remaining in place
 % Note that the time value is prepended at the end of this function
 nTrajPts = 6; 
-cmd = zeros(nTrajPts,length(IC));
+nTrajVal = length(IC);
+cmd = zeros(nTrajPts,nTrajVal);
 for i=1:nTrajPts
     cmd(i,:) = IC;
 end
@@ -153,14 +149,14 @@ elseif refIdx == 7
     cmd(2,:) = IC;
     cmd(3,[1:2 6]) = [position_1 angle_1];  % New position and angle
     cmd(4,[1:2 6]) = [position_1 angle_1];  
-    cmd(5,[6 13:15]) = [angle_2 0 1 1.5-0.45];  % New angle (disabled approach contol)
-    cmd(6,[6 13:15]) = [angle_2 0 1 0.25];  % New angle (disabled approach control)
+    cmd(5,[6]) = [angle_2];  % New angle
+    cmd(6,[6]) = [angle_2];  % New angle
 end
 
 % Add dummy points to the trajectory so that the command transitions are
 % crisp rather than interpolated
 newtimeline = zeros(1,2*size(timeline,2)-2);
-newcmd = zeros(2*size(timeline,2)-2,15);
+newcmd = zeros(2*size(timeline,2)-2,nTrajVal);
 newtimeline(1) = timeline(1);
 newcmd(1,:) = cmd(1,:);
 for i = 2:size(timeline,2)-1
@@ -184,7 +180,7 @@ end
 newtimeline(end) = timeline(end);
 newcmd(end,:) = cmd(end,:);
 
-newrefTraj = zeros(size(newtimeline,2),16);
+newrefTraj = zeros(size(newtimeline,2),nTrajVal+1);
 for i = 1:size(newtimeline,2)
     newrefTraj(i,:) = [newtimeline(i) newcmd(i,:)]; 
 end

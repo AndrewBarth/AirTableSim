@@ -1,12 +1,14 @@
-function [outControlMode] = gncExecutive(navState,refTraj,inControlMode)
+function [outGNCMode] = gncExecutive(navState,refTraj,useRangeGuid,inGNCMode)
 % Determine when the proper location and orientation has been reached
 % and proceed with the approach
 % 
 % Inputs: navState        current state data
 %         refTraj         reference trajectory 
-%         inControlMode   current control mode
+%         useRangeGuid    Flag (0 or 1) to indicate if range guidance
+%                         should be used
+%         inGNCMode       current GNC mode
 %
-% Output: outControlMode  desired control mode
+% Output: outGNCMode  desired GNC mode
 %
 % Assumptions and Limitations:
 %
@@ -16,11 +18,17 @@ function [outControlMode] = gncExecutive(navState,refTraj,inControlMode)
 %
 % Modification History:
 %    Jun 19 2019 - Initial version
+%    Mar 23 2022 - Renamed and modified final approach logic
+%
 
-zeroPos = 0.03;
-zeroVel = 0.04;
-zeroAtt = 0.075;  % 1 deg
-zeroRate = 0.075; % 1 deg/s
+% Default is to remain in current mode
+outGNCMode = inGNCMode;
+
+% Define tolerances for transition to ranging guidance
+RG_PosTol = 0.03;
+RG_VelTol = 0.04;
+RG_AttTol = 0.075;  % 1 deg
+RG_RateTol = 0.075; % 1 deg/s
 
 pos = navState.TranState_ECEF.R_Sys_ECEF';
 vel = navState.TranState_ECEF.V_Sys_ECEF';
@@ -31,16 +39,15 @@ refPos  = refTraj(end,2:4);
 refVel  = refTraj(end,8:10);
 refAtt  = refTraj(end,5:7);
 refRate = refTraj(end,11:13);
-useApp = refTraj(end,14);
 
 posErr = norm(refPos - pos);
 velErr = norm(refVel - vel);
 attErr = norm(refAtt - att);
 rateErr = norm(refRate - rate);
 
-if posErr < zeroPos && velErr < zeroVel && attErr < zeroAtt && rateErr < zeroRate && useApp > 0
-    outControlMode = 2;
-%     outControlMode = inControlMode;
-else
-    outControlMode = inControlMode;
+if inGNCMode ~= 2
+    if useRangeGuid > 0 && posErr < RG_PosTol && velErr < RG_VelTol && attErr < RG_AttTol && rateErr < RG_RateTol
+        % Switch to range guidance mode
+        outGNCMode = 2;
+    end
 end
