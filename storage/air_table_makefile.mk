@@ -1,8 +1,9 @@
 ###########################################################################
 ## Makefile generated for component 'AirTableModel'. 
 ## 
-## Makefile     : AirTableModel.mk
+## Makefile     : air_table_makefile.mk
 ## Generated on : Fri Oct 29 13:15:45 2021
+## Hand-editied to include air table support files
 ## Final product: $(RELATIVE_PATH_TO_ANCHOR)/AirTableModel.elf
 ## Product type : executable
 ## 
@@ -17,7 +18,7 @@
 # MAKEFILE                Name of this makefile
 
 PRODUCT_NAME              = AirTableModel
-MAKEFILE                  = AirTableModel.mk
+MAKEFILE                  = air_table_makefile.mk
 MATLAB_ROOT               = $(MATLAB_WORKSPACE)/C/Program_Files/MATLAB/R2021a
 MATLAB_BIN                = $(MATLAB_WORKSPACE)/C/Program_Files/MATLAB/R2021a/bin
 MATLAB_ARCH_BIN           = $(MATLAB_BIN)/win64
@@ -156,7 +157,7 @@ BUILD_TYPE = "Top-Level Standalone Executable"
 ## INCLUDE PATHS
 ###########################################################################
 
-INCLUDES_BUILDINFO = -I$(START_DIR)/slprj/ert/UseHWSensorData -I$(START_DIR)/slprj/ert/TranslationalDynamics -I$(START_DIR)/slprj/ert/ThrusterModel0 -I$(START_DIR)/slprj/ert/SlidingModeControl -I$(START_DIR)/slprj/ert/ReactionWheel0 -I$(START_DIR)/slprj/ert/PIDControl -I$(START_DIR)/slprj/ert/PhasePlaneControl -I$(START_DIR)/slprj/ert/FormStateBus -I$(START_DIR)/slprj/ert/AttitudeDynamics -I$(START_DIR)/slprj/ert/ApproachControl -I$(START_DIR) -I$(START_DIR)/AirTableModel_ert_rtw -I$(MATLAB_ROOT)/extern/include -I$(MATLAB_ROOT)/simulink/include -I$(MATLAB_ROOT)/rtw/c/src -I$(MATLAB_ROOT)/rtw/c/src/ext_mode/common -I$(MATLAB_ROOT)/rtw/c/ert -I$(START_DIR)/slprj/ert/_sharedutils -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/realtime/targets/raspi/include -I$(MATLAB_ROOT)/toolbox/coder/rtiostream/src/utils -I$(MATLAB_ROOT)/toolbox/target/codertarget/rtos/inc -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/shared/file_logging/include
+INCLUDES_BUILDINFO = -I$(START_DIR)/slprj/ert/UseHWSensorData -I$(START_DIR)/slprj/ert/TranslationalDynamics -I$(START_DIR)/slprj/ert/ThrusterModel0 -I$(START_DIR)/slprj/ert/SlidingModeControl -I$(START_DIR)/slprj/ert/ReactionWheel0 -I$(START_DIR)/slprj/ert/PIDControl -I$(START_DIR)/slprj/ert/PhasePlaneControl -I$(START_DIR)/slprj/ert/FormStateBus -I$(START_DIR)/slprj/ert/AttitudeDynamics -I$(START_DIR)/slprj/ert/RangeGuidance -I$(START_DIR) -I$(START_DIR)/AirTableModel_ert_rtw -I$(MATLAB_ROOT)/extern/include -I$(MATLAB_ROOT)/simulink/include -I$(MATLAB_ROOT)/rtw/c/src -I$(MATLAB_ROOT)/rtw/c/src/ext_mode/common -I$(MATLAB_ROOT)/rtw/c/ert -I$(START_DIR)/slprj/ert/_sharedutils -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/realtime/targets/raspi/include -I$(MATLAB_ROOT)/toolbox/coder/rtiostream/src/utils -I$(MATLAB_ROOT)/toolbox/target/codertarget/rtos/inc -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/shared/file_logging/include
 
 INCLUDES_OPENCV = -I/usr/local/include/opencv4
 INCLUDES_SERIAL = -I$(SERIAL_DIR)
@@ -191,7 +192,7 @@ PHIDGET_SRC = $(PHIDGET_DIR)/PhidgetHelperFunctions.c $(PHIDGET_DIR)/Acceleromet
 IMAGE_SRC = $(IMAGE_DIR)/captureImage.cpp $(IMAGE_DIR/initCamera.cpp 
 #IMAGE_SRC = $(IMAGE_DIR)/captureImage.cpp $(IMAGE_DIR/initCamera.cpp $(IMAGE_DIR)/imageProc.cpp $(IMAGE_DIR)/ImageProcessing.cpp
 VICON_SRC = $(VICON_DIR)/initializeUDP.cpp $(VICON_DIR)/getUDPData.cpp $(VICON_DIR)/initializeDataStream.cpp $(VICON_DIR)/getDataStream.cpp
-MAIN_SRC = $(START_DIR)/AirTableModel_ert_rtw/ert_main.cpp
+MAIN_SRC = $(START_DIR)/AirTableModel_ert_rtw/air_table_driver.cpp
 
 ALL_SRCS = $(SRCS) $(SERIAL_SRC) $(PHIDGET_SRC) $(IMAGE_SRC) $(MAIN_SRC) ${SHARED_SRC)
 
@@ -203,7 +204,7 @@ OBJS = captureImage.cpp.o initCamera.cpp.o initializeUDP.cpp.o getUDPData.cpp.o 
 #OBJS = captureImage.cpp.o initCamera.cpp.o imageProc.cpp.o ImageProcessing.cpp.o serial_init.c.o arduino-serial-lib.c.o arduino-serial.c.o PhidgetHelperFunctions.c.o AccelerometerInit.c.o MagnetometerInit.c.o DistanceInit.c.o AirTableModel.cpp.o AirTableModel_data.cpp.o MW_raspi_init.c.o MW_Pyserver_control.c.o linuxinitialize.cpp.o ert_targets_logging.c.o raspi_file_logging.c.o
 
 SHARED_OBJS = $(addprefix $(join $(SHARED_BIN_DIR),/), $(addsuffix .cpp.o, $(basename $(notdir $(wildcard $(SHARED_SRC_DIR)/*.cpp)))))
-MAIN_OBJ = ert_main.cpp.o
+MAIN_OBJ = air_table_driver.cpp.o
 
 ALL_OBJS = $(OBJS) $(MAIN_OBJ) $(SHARIED_OBJS)
 
@@ -217,7 +218,7 @@ PREBUILT_OBJS =
 ## LIBRARIES
 ###########################################################################
 
-MODELREF_LIBS = ../slprj/ert/ApproachControl/ApproachControl_rtwlib.lib ../slprj/ert/AttitudeDynamics/AttitudeDynamics_rtwlib.lib ../slprj/ert/FormStateBus/FormStateBus_rtwlib.lib ../slprj/ert/PIDControl/PIDControl_rtwlib.lib  ../slprj/ert/PhasePlaneControl/PhasePlaneControl_rtwlib.lib ../slprj/ert/ReactionWheel0/ReactionWheel0_rtwlib.lib ../slprj/ert/SlidingModeControl/SlidingModeControl_rtwlib.lib ../slprj/ert/ThrusterModel0/ThrusterModel0_rtwlib.lib ../slprj/ert/TranslationalDynamics/TranslationalDynamics_rtwlib.lib ../slprj/ert/UseHWSensorData/UseHWSensorData_rtwlib.lib
+MODELREF_LIBS = ../slprj/ert/RangeGuidance/RangeGuidance_rtwlib.lib ../slprj/ert/AttitudeDynamics/AttitudeDynamics_rtwlib.lib ../slprj/ert/FormStateBus/FormStateBus_rtwlib.lib ../slprj/ert/PIDControl/PIDControl_rtwlib.lib  ../slprj/ert/PhasePlaneControl/PhasePlaneControl_rtwlib.lib ../slprj/ert/ReactionWheel0/ReactionWheel0_rtwlib.lib ../slprj/ert/SlidingModeControl/SlidingModeControl_rtwlib.lib ../slprj/ert/ThrusterModel0/ThrusterModel0_rtwlib.lib ../slprj/ert/TranslationalDynamics/TranslationalDynamics_rtwlib.lib ../slprj/ert/UseHWSensorData/UseHWSensorData_rtwlib.lib
 
 VICON_LIBS = -lViconDataStreamSDKCore -lViconCGStreamClientSDK -lViconCGStreamClient -lViconCGStream -lStreamCommon -lViconDataStreamSDK_CPP
 
@@ -340,7 +341,7 @@ execute : download
 
 $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS) $(MODELREF_LIBS) $(LIBS) $(MAIN_OBJ)
 	echo "### Creating standalone executable "$(PRODUCT)" ..."
-	$(CPP_LD) $(CPP_LDFLAGS) -o $(PRODUCT) $(OBJS) $(MAIN_OBJ) ../slprj/ert/ApproachControl/ApproachControl_rtwlib.lib ../slprj/ert/AttitudeDynamics/AttitudeDynamics_rtwlib.lib ../slprj/ert/FormStateBus/FormStateBus_rtwlib.lib ../slprj/ert/PIDControl/PIDControl_rtwlib.lib ../slprj/ert/PhasePlaneControl/PhasePlaneControl_rtwlib.lib ../slprj/ert/ReactionWheel0/ReactionWheel0_rtwlib.lib ../slprj/ert/SlidingModeControl/SlidingModeControl_rtwlib.lib ../slprj/ert/ThrusterModel0/ThrusterModel0_rtwlib.lib ../slprj/ert/TranslationalDynamics/TranslationalDynamics_rtwlib.lib ../slprj/ert/UseHWSensorData/UseHWSensorData_rtwlib.lib $(LIBS) $(SYSTEM_LIBS) $(TOOLCHAIN_LIBS)
+	$(CPP_LD) $(CPP_LDFLAGS) -o $(PRODUCT) $(OBJS) $(MAIN_OBJ) ../slprj/ert/RangeGuidance/RangeGuidance_rtwlib.lib ../slprj/ert/AttitudeDynamics/AttitudeDynamics_rtwlib.lib ../slprj/ert/FormStateBus/FormStateBus_rtwlib.lib ../slprj/ert/PIDControl/PIDControl_rtwlib.lib ../slprj/ert/PhasePlaneControl/PhasePlaneControl_rtwlib.lib ../slprj/ert/ReactionWheel0/ReactionWheel0_rtwlib.lib ../slprj/ert/SlidingModeControl/SlidingModeControl_rtwlib.lib ../slprj/ert/ThrusterModel0/ThrusterModel0_rtwlib.lib ../slprj/ert/TranslationalDynamics/TranslationalDynamics_rtwlib.lib ../slprj/ert/UseHWSensorData/UseHWSensorData_rtwlib.lib $(LIBS) $(SYSTEM_LIBS) $(TOOLCHAIN_LIBS)
 	echo "### Created: $(PRODUCT)"
 
 
@@ -424,7 +425,7 @@ $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS) $(MODELREF_LIBS) $(LIBS) $(MAIN_OBJ)
 	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-ert_main.cpp.o : $(START_DIR)/AirTableModel_ert_rtw/ert_main.cpp
+air_table_driver.cpp.o : $(START_DIR)/AirTableModel_ert_rtw/air_table_driver.cpp
 	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 

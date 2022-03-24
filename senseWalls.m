@@ -12,21 +12,7 @@ function [range,rangeArray] = senseWalls(state,rangeSensorLocBody,rangeSensorAng
 %         rangeArray         minimum distances to each wall
 %
 % Assumptions and Limitations:
-%     Rows in wallDistTable are the walls
-%            1)  left wall
-%            2)  right wall
-%            3)  top left wall
-%            4)  top right wall
-%            5)  back wall
-%            6)  left goal wall
-%            7)  right goal wall
-%            8+) N interior walls
-%     Columns in wallDistTable are: 
-%            1) robot to wall
-%            2) rod endpoint 1 to wall
-%            3) rod endpoint 2 to wall
-%            4) wall endpoint 1 to rod
-%            5) wall endpoint 2 to rod
+%    Arrays are sized for 4 walls
 %
 % Dependencies:
 %    quatrotate
@@ -39,6 +25,7 @@ function [range,rangeArray] = senseWalls(state,rangeSensorLocBody,rangeSensorAng
 %
 % Modification History:
 %    Jun 17 2019 - Initial version
+%    Mar 23 2022 - Corrected comments
 %
 
 range = zeros(4,1);

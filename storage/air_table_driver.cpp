@@ -3,9 +3,10 @@
 // course requirements at degree granting institutions only.  Not for
 // government, commercial, or other organizational use.
 //
-// File: ert_main.cpp
+// File: air_table_driver.cpp
 //
 // Code generated for Simulink model 'AirTableModel'.
+// Hand-modified for use with air platform sensors
 //
 // Model version                  : 6.3
 // Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
@@ -105,8 +106,6 @@ int getDataStream(ViconDataStreamSDK::CPP::Client *MyClient, double translation[
 int initializeDataStream(ViconDataStreamSDK::CPP::Client *MyClient, std::string HostName);
 int initializeUDP(int *handle);
 int getUDPData(int handle, char *packet_data);
-//double imageProc(unsigned int range[4], unsigned char imageOut[307200]);
-//void thFun(std::promise<double> & prms, int timeTic);
 
 /* Variables for Arduino comm and Phidget comm */
 PhidgetAccelerometerHandle ach;
@@ -135,7 +134,6 @@ double endTime;
 
 cv::VideoCapture cap;
 int firstPass = 1;
-double estTheta = 0;
 std::future<double> ans;
 
 void *subrateTask(void *arg)
@@ -175,10 +173,6 @@ void *baseRateTask(void *arg)
   char theMessage[8];
   unsigned char imageOut[307200];
   //FILE *fid=fopen("testGyro.txt","w");
-//std::promise<double> prms;
-//std::future<double> ftr = prms.get_future();
-//std::thread th(&thFun, std::ref(prms), 0);
-//th.detach();
 
   runModel = (rtmGetErrorStatus(AirTableModel_Obj.getRTM()) == (NULL));
   while (runModel) {
@@ -191,28 +185,6 @@ void *baseRateTask(void *arg)
       range[0] = 1900;
    }
    // Process Sensor inputs
-//   if (firstPass == 1) {
-//      firstPass = 0;
-//      ans = std::async(std::launch::async, imageProc, range, imageOut);
-//   }
-//   if (ans.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
-//       printf("**********************************\n");
-//       estTheta = ans.get();
-//       ans = std::async(std::launch::async, imageProc, range, imageOut);
-//   }
-//   if (ftr.valid()) {
-//   if (ftr.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
-//      printf("Future Ready \n");
-//      double testval = ftr.get();
-//      printf("test val is: %7.3f\n",testval);
-//      prms = std::promise<double>();
-//      ftr = std::future<double>();
-//      std::promise<double> prms;
-//      std::future<double> ftr = prms.get_future();
-//      ftr = prms.get_future();
-//      std::thread th(&thFun, std::ref(prms), timeTic);
-//   }
-//   }
 
     if ( (timeTic % 25) == 0) {
     //if ( (timeTic % 50) == 0) {
@@ -221,16 +193,8 @@ void *baseRateTask(void *arg)
        if (useCamera) {
           rc = getImage(&cap,imageOut);
        }
-       //memcpy(AirTableModel_Obj.AirTableModel_U.ImageData,imageOut,307200*sizeof(char));
-       AirTableModel_Obj.AirTableModel_U.estTheta = estTheta;
-       AirTableModel_Obj.AirTableModel_U.thetaQuality = 1;
-
-       //printf("The estTheta output is: %7.3f\n\n",estTheta);
-       //printf("The image output is: %c\n\n",imageOut[52]);
-
-       //FILE *imgfid=fopen("myImage.bin","wb");
-       //fwrite(imageOut,sizeof(char),sizeof(imageOut),imgfid);
-       //fclose(imgfid);
+       AirTableModel_Obj.AirTableModel_U.ImageData = 0.0;
+       AirTableModel_Obj.AirTableModel_U.ImageQuality = 0;
 
        // Vicon Tracker Data
        if (useVicon == 1) {
@@ -338,10 +302,7 @@ void *baseRateTask(void *arg)
 
        //printf("Raw  Range: %7.3f\n",AirTableModel_Obj.AirTableModel_Y.rawSensorData[6]);
        //printf("Filt Range: %7.3f\n",AirTableModel_Obj.AirTableModel_Y.filteredSensorData[6]);
-       //printf("Raw Theta:   %7.3f deg\n",AirTableModel_Obj.AirTableModel_Y.filteredSensorData[13]*57.2958);
-       //printf("Est Theta:   %7.3f deg\n",AirTableModel_Obj.AirTableModel_Y.estAng*57.2958);
        //printf("Vicon Theta: %7.3f deg\n",rz*57.2958);
-       //printf("Theta Qual: %6.2f \n",AirTableModel_Obj.AirTableModel_Y.sensorQuality[4]);
     }
 
     stopRequested = !((rtmGetErrorStatus(AirTableModel_Obj.getRTM()) == (NULL)));
